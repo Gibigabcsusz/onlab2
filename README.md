@@ -1,2 +1,4 @@
-# onlab2
-Villamosmérnök MSc Önálló Laboratórium 2
+# Modell-redukció alkalmazása az elektromágneses térszámításban
+Témakiírás:
+
+A gyakorlati jelentőséggel bíró elektromágneses térszámítási feladatokat többnyire csak numerikus módszerekkel (pl. végeselem-módszer, véges differencia módszer) lehet megoldani. E numerikus eljárások számításigénye rendszerint nagy, mert a diszkretizálás (pl. hálózás) során sok ismeretlen keletkezik. Sokszor merül fel az igény, hogy sok, egymástól kevéssé eltérő (pl. más peremfeltételt vagy más gerjesztést tartalmazó) feladatot oldjunk meg egymás után, pl. egy eszköz optimalizálása során. Ekkor segítségül hívhatunk bizonyos modell-redukciós módszereket, amelyek néhány jól megválasztott minta megoldás alapján közelítő eredményt szolgáltatnak a hasonlóan kitűzött feladatok megoldására is. Egy ilyen technika a Proper Orthogonal Decomposition, amely egy, az összes szóba jöhető megoldások terét közelítőleg kifeszítő bázist állít elő, így bármely megoldás közelítőleg megadható e bázis elemeinek lineáris kombinációjaként. A hallgató feladata megismerkedni a Proper Orthogonal Decomposition módszerrel és annak lehetséges felhasználásaival az EM térszámítás területén, valamint egy EM tesztpéldára a módszert használó megoldóprogramot készíteni.

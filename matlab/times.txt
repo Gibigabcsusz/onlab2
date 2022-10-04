@@ -1,0 +1,1 @@
+eredeti: Elapsed time is 9.26242 seconds.

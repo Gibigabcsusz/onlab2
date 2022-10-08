@@ -48,37 +48,31 @@
 
 \listfiles % a package-ek kilistázása a logba
 
-\title{
-    \centering
-    \includegraphics[width=0.6\textwidth]{kep/bme_logo.pdf} \\
-    \vspace{0.5cm}
-    \large{\textbf{Budapesti Műszaki és Gazdaságtudományi Egyetem}\\
-    \textbf{Villamosmérnöki és Informatikai Kar}\\
-    \textbf{Szélessávú Hírközlés és Villamosságtan Tanszék}}\\
-    \vspace{5cm}
-    \huge{\textbf{Önálló laboratórium 2 dolgozat}} \\
-    \vspace{3cm}
-}
-
-%\parskip=10pt
-%\parindent=0pt
+\parskip=10pt
+\parindent=0pt
 
 \author{Szilágyi Gábor \\\vspace{2cm}\\ Konzulens: Dr. Bilicz Sándor}
 \date{Budapest, \today}
 
 
 \begin{document}
-    \maketitle
-    \tableofcontents
-    \section{Meglátások}
-        Itt fogom leírni, hogy mit sikerült eddig felfognom az elméleti háttérből.
-        \subsection{POD madártávlatból}
-            Nemlineáris problémák esetén szokott adódni olyan megoldandó, $M$-ismeretlenes egyenletrendszer, ahol $M$ a szimulált tér diszkretizált pontjainak a száma ($M \gg 1$). Az eredeti egyenletrendszer egzakt megoldása helyett egy jelentősen csökkentett $N$ dimenziójú ($N \ll M$) egyenletrendszert oldunk meg, aminek a megoldása jól közelíti az eredetiét.
-    \section{\LaTeX~próba}
-            Lorem ipsum \cite{PGD}
-    \bibliography{mybib}
-    \bibliographystyle{plain}
-    \addcontentsline{toc}{section}{Hivatkozások}
+    \begin{center}
+        \huge Összefoglaló J. Nathan Kutz POD-ról szóló előadásairól
+    \end{center}
+    \section*{1. videó}
+        \textbf{Def.:} $N \in \mathbb{N}$ --- a térbeli mintavételi vagy diszkretizálási pontok száma, a természetes bázis számossága (nagy) \par
+        \textbf{Def.:} $M \in \mathbb{N}, M \ll N$ --- a redukált bázis számossága \par
+        \textbf{Def.:} $u(x,t) = u \in \mathbb{C}$ --- a keresett függvény, ami idő- és helyfüggő \par
+        \textbf{Megj.:} $u(x,t) = \displaystyle\sum_{i} a_i \cdot \phi_i$ --- a keresett függvény bázisfüggvényekkel való felírása \par
+        \textbf{Def.:} $\phi_i(x) = \phi_i$ --- az $i$-edik bázisfüggvény \par
+        \textbf{Def.:} $a_i(t) = a_i \in \mathbb{C}$ --- az $i$-edik bázisfüggvény együtthatója\par
+        \subsection*{Bevezetés}
+            Deriváltakból hogyan lesz véges differencia, diffegyenletekből hogyan lesznek véges differencia egyenletek (egydimenziós eset, $x \in [-L, L] \subset \mathbb{R}$, $x_i$ az $i$-edik térbeli mintavételi pont, $\Delta x = x_{i+1} - x_i$) \\
+            \begin{align*}
+                \frac{d u}{d x} \approx \frac{x_{i+1}-x_{i-1}}{2\cdot \Delta x}, \quad
+                \frac{d^2 u}{d x^2} \approx \frac{x_{i-1}-2\cdot x_{i}+x_{i+1}}{\Delta x^2}
+            \end{align*}
+        \subsection*{Változók szétválasztása} Erre épül a POD azzal, hogy a megválasztott bázisfüggvényekből (amelyek a térkoordináták függvényei) és a bázisfüggvények együtthatóiból (amelyek időfüggőek) állítjuk elő a differenciálegyenlet-rendszer megoldását. Diszkrét esetben, tehát a szimulációk során is, a bázisfüggvények térbeli mintavételezésével kapjuk a bázisvektorokat és a bázisfüggvények együtthatóinak időbeli mintavételezésével kapjuk a bázisvektorok együtthatóit.
 \end{document}
 
 

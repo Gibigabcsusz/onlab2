@@ -59,20 +59,54 @@
     \begin{center}
         \huge Összefoglaló J. Nathan Kutz POD-ról szóló előadásairól
     \end{center}
+        Az előadó 3, egyenként szűk egy órás videóban mutatja be a POD, vagyis a Proper Orthogonal Decomposition módszer alapjait. A videók elérhetőek az előadó honlapján: \url{https://faculty.washington.edu/kutz/rom/page1/page5/rom.html} vagy YouTube-on: \url{https://www.youtube.com/c/NathanKutzAMATH} (POD introduction 1,2,3) \\
+        Linkek elérve: 2022.10.08.
     \section*{1. videó}
-        \textbf{Def.:} $N \in \mathbb{N}$ --- a térbeli mintavételi vagy diszkretizálási pontok száma, a természetes bázis számossága (nagy) \par
-        \textbf{Def.:} $M \in \mathbb{N}, M \ll N$ --- a redukált bázis számossága \par
-        \textbf{Def.:} $u(x,t) = u \in \mathbb{C}$ --- a keresett függvény, ami idő- és helyfüggő \par
-        \textbf{Megj.:} $u(x,t) = \displaystyle\sum_{i} a_i \cdot \phi_i$ --- a keresett függvény bázisfüggvényekkel való felírása \par
-        \textbf{Def.:} $\phi_i(x) = \phi_i$ --- az $i$-edik bázisfüggvény \par
-        \textbf{Def.:} $a_i(t) = a_i \in \mathbb{C}$ --- az $i$-edik bázisfüggvény együtthatója\par
-        \subsection*{Bevezetés}
-            Deriváltakból hogyan lesz véges differencia, diffegyenletekből hogyan lesznek véges differencia egyenletek (egydimenziós eset, $x \in [-L, L] \subset \mathbb{R}$, $x_i$ az $i$-edik térbeli mintavételi pont, $\Delta x = x_{i+1} - x_i$) \\
+        \subsection*{Néhány jelölés és definíció}
+            \textbf{Def.:} $N \in \mathbb{N}$ --- a térbeli mintavételi vagy diszkretizálási pontok száma, a természetes bázis számossága (nagy) \par
+            \textbf{Def.:} $N \in \mathbb{N}$ --- a térbeli mintavételi vagy diszkretizálási pontok száma, a természetes bázis számossága (nagy) \par
+            \textbf{Def.:} $M \in \mathbb{N}, M \ll N$ --- a redukált bázis számossága \par
+            \textbf{Def.:} $u(x,t) = u \in \mathbb{C}$ --- a keresett függvény, ami idő- és helyfüggő \par
+            \textbf{Def.:} $\varPsi_i(x) = \varPsi_i$ --- az $i$-edik bázisfüggvény \par
+            \textbf{Def.:} $a_i(t) = a_i \in \mathbb{C}$ --- az $i$-edik bázisfüggvény együtthatója\par
+            \textbf{Megj.:} $u(x,t) = \displaystyle\sum_{i} a_i \cdot \varPsi_i$ --- a keresett függvény bázisfüggvényekkel való felírása \par
+        \subsection*{Diszkretizálás}
+            Deriváltakból hogyan lesz véges differencia, diffegyenletekből hogyan lesznek véges differencia egyenletek (egydimenziós eset, $x \in [-L, L] \subset \mathbb{R}$, $x_n$ az $n$-edik térbeli mintavételi pont, $\Delta x = x_{n+1} - x_n$). Diszkrét esetben, tehát a szimulációk során is, a bázisfüggvények térbeli mintavételezésével kapjuk a bázisvektorokat és a bázisfüggvények együtthatóinak időbeli mintavételezésével kapjuk a bázisvektorok együtthatóit. ($u_n$ az $u$ függvény $n$-edik mintavételi pontban felvett értéke, de $u_t$, $u_x$, ... az $u$ parciális deriváltjai $t$, $x$, ... szerint. $\mu$ valamilyen paraméter.) \\
             \begin{align*}
-                \frac{d u}{d x} \approx \frac{x_{i+1}-x_{i-1}}{2\cdot \Delta x}, \quad
-                \frac{d^2 u}{d x^2} \approx \frac{x_{i-1}-2\cdot x_{i}+x_{i+1}}{\Delta x^2}
+                \frac{d u}{d x} \approx \frac{x_{n+1}-x_{n-1}}{2\cdot \Delta x}, \quad
+                \frac{d^2 u}{d x^2} \approx \frac{x_{n-1}-2\cdot x_{n}+x_{n+1}}{\Delta x^2}, \quad \dots
             \end{align*}
-        \subsection*{Változók szétválasztása} Erre épül a POD azzal, hogy a megválasztott bázisfüggvényekből (amelyek a térkoordináták függvényei) és a bázisfüggvények együtthatóiból (amelyek időfüggőek) állítjuk elő a differenciálegyenlet-rendszer megoldását. Diszkrét esetben, tehát a szimulációk során is, a bázisfüggvények térbeli mintavételezésével kapjuk a bázisvektorokat és a bázisfüggvények együtthatóinak időbeli mintavételezésével kapjuk a bázisvektorok együtthatóit.
+            \begin{align*}
+                u(x,t) \quad \longrightarrow & \quad u(x_n,t) = u_n, \quad n = 1,2,3,...,N \\
+                \frac{\partial u}{\partial t} = u_t = F(u,u_x,u_{xx},...,t,\mu) \quad \longrightarrow & \quad
+                \frac{d u_n}{d t} = F(u_n,u_{n\pm1},u_{n\pm2},...,t,\mu)
+            \end{align*}
+        \subsection*{Változók szétválasztása}
+            Erre épül a POD azzal, hogy a megválasztott bázisfüggvényekből ($\varPsi_i$, amelyek a térkoordináták függvényei) és a bázisfüggvények együtthatóiból ($a_i$, amelyek időfüggőek) állítjuk elő a megoldást, $u$-t. A változók szétválasztása nem minden esetben tehető meg formálisan, de megfelelő számú bázisvektor használata esetén ilyenkor is lehet jó eredményre jutni a numerikus módszereknél. Feltesszük, hogy a változók ($x$ és $t$) szétválasztása megtehető, emiatt:
+            \begin{align*}
+                \frac{\partial u}{\partial t}~= &~F(u,~u_x,~u_{xx},~...~,~t,~\mu) \\
+                \Downarrow & \\
+                \sum \frac{d a_{i}}{d t} \varPsi_{i}~= &~F\left(\sum a_{i} \varPsi_{i},~\sum a_{i} \frac{d\varPsi_{i}}{dx},~\sum a_{i} \frac{d^2\varPsi_{i}}{dx^2},~...~,~t,~\mu\right)
+            \end{align*}
+            A jobb kezelhetőség érdekében ortonormált bázist választunk:
+            \begin{align*}
+                \left( \varPsi_{i},\varPsi_{j}  \right)~=~\int_{-L}^{L}\varPsi_{i} \varPsi_{j}  ~dx~=~\delta_{ij}~=~
+                \begin{cases}
+                    0 & i \ne j \\
+                    1 & i = j
+                \end{cases}
+            \end{align*}
+            A $\varPsi$ bázis ortonormalitása miatt a következővé alakítható a megoldásfüggvény idő szerinti deriváltjának fenti egyenlete:
+            \begin{align*}
+                \sum \frac{d a_{i}}{d t} \varPsi_{i}~=&~F\left(\sum a_{i} \varPsi_{i},~\sum a_{i} \frac{d\varPsi_{i}}{dx},~\sum a_{i} \frac{d^2\varPsi_{i}}{dx^2},~...~,~t,~\mu\right) \\
+                \Downarrow & \quad \int_{-L}^{L} (\phantom{abc})\cdot \varPsi_{j}~dx \\
+                \frac{d a_{j}}{d t}~=&~\left( F, \varPsi_{j} \right), \quad j = 1,2,...,N
+            \end{align*}
+            A kapott kifejezés magában nem tűnik előrelépésnek, de a megfelelő $\varPsi$ bázis megválasztásával nem kell mind az $N$ bázisvektort figyelembe venni, hanem csak $M$-et közülük, és így is egy jó közelítő megoldást kapunk, mert a többi bázisvektor együtthatója numerikusan inszignifikáns.
+            \subsection*{MATLAB példa}
+                A következőkben az előadó bemutatja a Fourier-transzformáció esetén, hogy az adott problémától és annak paramétereitől függően nem mindig járunk jól, ha egy előre meghatározott bázisra képezzük le a problémát. A diszkrét Fourier-transzformáció numerikusan nagyon hatékony a használt bázis számosságához képest és egyéb kedvező tulajdonságai is vannak. Ha viszont olyan problémával kell megküzdeni, amihez nem jól illeszkednek a fourier-módusok és nagy a szabadsági fokainak száma, akkor sokkal jobban járhatunk, ha az adott problémához igazított optimális bázist választunk. A POD-nak pedig éppen ez a bázisválasztás a célja.
+    \newpage
+        \section*{2. Videó}
 \end{document}
 
 

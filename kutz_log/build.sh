@@ -13,9 +13,9 @@ if [ $? = 0 ]; then
         echo "\n\n\nFordítás pdflatex 2\n\n\n" >> output.txt
         pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
     fi
-    echo "Fordítás pdflatex 3"
-    echo "\n\n\nFordítás pdflatex 3\n\n\n" >> output.txt
-    pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
+#    echo "Fordítás pdflatex 3"
+#    echo "\n\n\nFordítás pdflatex 3\n\n\n" >> output.txt
+#    pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
 else
     echo "Error:\n\n"
     cat output.txt

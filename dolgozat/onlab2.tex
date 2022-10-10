@@ -74,7 +74,15 @@
         Itt fogom leírni, hogy mit sikerült eddig felfognom az elméleti háttérből.
         \subsection{POD madártávlatból}
             Nemlineáris problémák esetén szokott adódni olyan megoldandó, $M$-ismeretlenes egyenletrendszer, ahol $M$ a szimulált tér diszkretizált pontjainak a száma ($M \gg 1$). Az eredeti egyenletrendszer egzakt megoldása helyett egy jelentősen csökkentett $N$ dimenziójú ($N \ll M$) egyenletrendszert oldunk meg, aminek a megoldása jól közelíti az eredetiét.
-    \section{\LaTeX~próba}
+        \subsection{Miért a kovarianciamátrixnak vesszük az SVD-jét?}
+            A redukált modell megalkotásához valamilyen snapshotokat használunk a teljes értékűen leszimulált rendszerből, ez a mátrix $\textbf{M}$, melynek az $i$-edik oszlopa az $i$-edik snapshothoz tartozó megoldásvektor\cite{Henneron14}. A rendszer dinamikájának alacsony dimenziós reprezentációjához az $\textbf{M}$ mátrix SVD-jét kell felhasználni:
+            \begin{align*}
+                \bf{M} =& \bf{V}\bf{\Sigma}\bf{W}^T \\
+                \bf{C} =& \bf{M}^T\bf{M} \\
+                \bf{C} =& \bf{W}\bf{\Sigma}\bf{V}^T\bf{V}\bf{\Sigma}\bf{W}^T \\
+                \bf{C} =& \bf{W}\bf{\Sigma}^2\bf{W}^T
+            \end{align*}
+\section{\LaTeX~próba}
             Lorem ipsum \cite{PGD}
     \bibliography{mybib}
     \bibliographystyle{plain}

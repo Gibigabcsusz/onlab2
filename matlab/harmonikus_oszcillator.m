@@ -22,4 +22,15 @@ for j=1:length(t)
     usol(j,:)=ifft(utsol(j,:));
 end
 
+figure(1)
 surfl(x,t,abs(usol)), shading interp
+
+[bal,sv,jobb]=svd(usol);
+
+X=sv';
+
+figure(2)
+plot(abs(diag(X)/sum(diag(X)))', 'ko', 'linewidth',2)
+hold on
+title('Szinguláris értékek abszolút értékei')
+

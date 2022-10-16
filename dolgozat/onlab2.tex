@@ -14,7 +14,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[magyar]{babel}
 \usepackage{amsfonts}
-\usepackage{amsmath}
+\usepackage{amsmath,bm}
 %\usepackage{amssymb}
 \usepackage{graphicx}
 %\usepackage[hang]{caption}
@@ -29,7 +29,7 @@
 %\usepackage{booktabs}
 \usepackage{hyperref}
 %\usepackage{listings}
-\usepackage{cite}
+%\usepackage{cite}
 %\usepackage{csquotes}
 %\usepackage[range-phrase=--, range-units=single]{siunitx}
 \usepackage{xcolor}
@@ -52,16 +52,20 @@
     \centering
     \includegraphics[width=0.6\textwidth]{kep/bme_logo.pdf} \\
     \vspace{0.5cm}
-    \large{\textbf{Budapesti Műszaki és Gazdaságtudományi Egyetem}\\
-    \textbf{Villamosmérnöki és Informatikai Kar}\\
-    \textbf{Szélessávú Hírközlés és Villamosságtan Tanszék}}\\
-    \vspace{5cm}
-    \huge{\textbf{Önálló laboratórium 2 dolgozat}} \\
-    \vspace{3cm}
+    \large{\bf{Budapesti Műszaki és Gazdaságtudományi Egyetem}\\
+    \bf{Villamosmérnöki és Informatikai Kar}\\
+    \bf{Szélessávú Hírközlés és Villamosságtan Tanszék}}\\
+    \vspace{4cm}
+    \large{\bf{Önálló laboratórium 2 dolgozat}} \\
+    \vspace{1cm}
+    \Large{\bf{Modell-redukció alkalmazása az elektromágneses térszámításban}} \\
+    \vspace{2cm}
 }
 
 %\parskip=10pt
 %\parindent=0pt
+
+\newcommand\adj[1]{#1^{\mathrm{H}}}
 
 \author{Szilágyi Gábor \\\vspace{2cm}\\ Konzulens: Dr. Bilicz Sándor}
 \date{Budapest, \today}
@@ -72,22 +76,35 @@
     \tableofcontents
     \section{Meglátások}
         Itt fogom leírni, hogy mit sikerült eddig felfognom az elméleti háttérből.
+    \section{Bevezetés}
         \subsection{POD madártávlatból}
-            Nemlineáris problémák esetén szokott adódni olyan megoldandó, $M$-ismeretlenes egyenletrendszer, ahol $M$ a szimulált tér diszkretizált pontjainak a száma ($M \gg 1$). Az eredeti egyenletrendszer egzakt megoldása helyett egy jelentősen csökkentett $N$ dimenziójú ($N \ll M$) egyenletrendszert oldunk meg, aminek a megoldása jól közelíti az eredetiét.
-        \subsection{Miért a kovarianciamátrixnak vesszük az SVD-jét?}
-            A redukált modell megalkotásához valamilyen snapshotokat használunk a teljes értékűen leszimulált rendszerből, ez a mátrix $\textbf{M}$, melynek az $i$-edik oszlopa az $i$-edik snapshothoz tartozó megoldásvektor\cite{Henneron14}. A rendszer dinamikájának alacsony dimenziós reprezentációjához az $\textbf{M}$ mátrix SVD-jét kell felhasználni:
-            \begin{align*}
-                \bf{M} =& \bf{V}\bf{\Sigma}\bf{W}^T \\
-                \bf{C} =& \bf{M}^T\bf{M} \\
-                \bf{C} =& \bf{W}\bf{\Sigma}\bf{V}^T\bf{V}\bf{\Sigma}\bf{W}^T \\
-                \bf{C} =& \bf{W}\bf{\Sigma}^2\bf{W}^T
-            \end{align*}
-\section{\LaTeX~próba}
-            Lorem ipsum \cite{PGD}
+            A POD, vagyis a Proper Orthogonal Decomposition egy modellredukciós eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkolásával egy közelítő bázist lehet előállítani ($\Psi'$), ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkolás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
+        \subsection{Felhasználási területek}
+            A POD eljárást számos tudományterületen sikeresen alkalmazták már.  Ezeknél a problémáknál az okozza általában a fő gondot, hogy a szimulált rendszer szabadsági fokainak száma nagyon nagy, emiatt egy-egy szimuláció nagyon sok ideig tart, pontatlanabb diszkretizált modell pedig fals eredményekre vezet. Lényeges felhasználási területek például: turbulens áramlások szimulációja; statisztikában az adathalmazok redukálása; szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás.
+        \subsection{Alkalmazás az elektromágneses térszámításban}
+            Az EM térszámításban többféle kontextusban is hasznos lehet a POD a futási idő  vagy a memóriafelhasználás jelentős csökkentésére. Az egyik megközelítésben egy végeselem modellben zajló tranziens folyamat lefolyására kaphatunk számítás szempontjából olcsó, közelítő megoldást. Ehhez először a teljes kérdéses időintervallum első töredék részére egy teljes értékű szimulációt futtatunk, amely viszonylag sok számítást igényel. Ennek a rövid részmegoldásnak az eredményei szolgálnak a POD bemenetéül. A POD ezek alapján meghatározza a rendszer dinamikájában megjelenő struktúrákat, majd csak a lényeges összetevőkre szorítkozva egy lecsökkentett szabadsági fokú rendszert szimulálunk tovább a hátralévő időben, ami már fajlagosan kevesebb számítást igényel.
+        \subsection{Egyéb megközelítések a POD használatához}
+            A fent vázolt, tranziens szimulációban történő alkalmazáson kívül más módokon is hasznosítható lehet a POD a térszámítási problémákban.
+            \par
+            Optimalizálási feladatoknál szokott előfordulni az a probléma, hogy az optimalizációhoz használható paraméterek miatt exponenciálisan megnövekszik egy modell szabadsági fokainak a száma.
+        \subsection{A felbontás egyenletei}
+            \begin{align}
+                {\bf S}~=&~{\bf V \Sigma \adj{U}} \\
+                {\bf C}~=&~{\bf \adj{S} S} \\
+                {\bf C}~=&~{\bf U \Sigma \adj{V} V\Sigma \adj{U}} \\
+                {\bf C}~=&~{\bf U \Sigma}^2{\bf \adj{U}}
+            \end{align}
+            Itt ${\bf S}$ a snapshot-mátrix, ${\bf V}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{U}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig a snapshotokból álló adathalmaz kovarianciamátrixa.
+    \section{\LaTeX~Próba}
+        Lorem ipsum \cite{PGD}.
+        \begin{align}
+            {\bf X}~=&~{\bf V\Sigma U}^*
+        \end{align}
     \bibliography{mybib}
     \bibliographystyle{plain}
-    \addcontentsline{toc}{section}{Hivatkozások}
 \end{document}
+
+%\cite{Henneron14}
 
 %            \begin{figure}
 %                \centering

@@ -19,18 +19,21 @@ dt   = 2e-7;        % [s] time step
 z  = linspace(0, a, n); 
 dz = z(2)-z(1);
 
-mu0   = pi*4e-7;    % [Vs/Am]
 sigma = 35e6;       % [S/m] conductivity
-alpha = 1/(mu0*sigma);
+mur   = 1;
+
+mu0   = pi*4e-7;    % [Vs/Am]
+mu    = mu0*mur;
+alpha = 1/(mu*sigma);
 F = alpha*dt/dz^2;
-disp("F="+F) % convergence factor (must be <0.5)
+disp("F="), disp(F) % convergence factor (must be <0.5)
 
 
 M = matrix_for_rotrot_descartes(z);
 
 H_init = zeros(n-2,1); % initial condition
 
-fun = @(t,H) odefun_plate_Hy_FD(t, H, a, M, t_pulse); 
+fun = @(t,H) odefun_plate_Hy_FD(t, H, a, M, t_pulse, mu, sigma); 
 
 nStep = ceil(Tmax/dt); % no. of steps
 
@@ -51,11 +54,11 @@ for i = 1:nStep
     t = t + dt;
 end
 
-figure(1)
-plot(t_all, H_all(end,:), t_all, H_all(round(2/3*n),:), t_all, H_all(round(1/3*n),:))
-xlabel('t (s)')
-ylabel('H_y (A/m)')
-legend('z=a', 'z=(2/3)a', 'z=(1/3)a')
+% figure(1)
+% plot(t_all, H_all(end,:), t_all, H_all(round(2/3*n),:), t_all, H_all(round(1/3*n),:))
+% xlabel('t (s)')
+% ylabel('H_y (A/m)')
+% legend('z=a', 'z=(2/3)a', 'z=(1/3)a')
 
 %%
 % reduced order approximation
@@ -64,21 +67,43 @@ X = H_all(2:end-1,1:nSampled);
 redOrder = 3; % number of base vectors for reduced model
 
 [U,S,V]=svd(X);
-% figure(2)
-% semilogy(diag(S)/sum(diag(S)), 'kx')
-% title('Singular values of snapshot matrix')
-% xlabel('i (no. of singular value)')
-% ylabel('\sigma /\Sigma \sigma_i')
-
+figure(2)
+semilogy(diag(S)/sum(diag(S)), 'kx')
+title('Singular values of snapshot matrix')
+xlabel('i (no. of singular value)')
+ylabel('\sigma /\Sigma \sigma_i')
+S
 Uhat = U(:,1:redOrder); % new base, columns are base vectors
 
-H = (H_all(2:end-1,nSampled)'*Uhat)'; % starting from the end of sampling
-t = (nSampled-1)*dt;
+%% matrix for the construction on M_red
+%T=[zeros(1,redOrder); Uhat; zeros(1,redOrder)];
+%T(redOrder,redOrder+2)=1;
+%
+%% projecting M to the reduced base
+%M_red = Uhat'*M*T;
+%M_red
+%fun_red = @(t,H_red) odefun_plate_Hy_FD_red(t, H_red, a, M_red, t_pulse); 
+%
+%nStep_red = nStep-nSampled; % no. of steps
+%
+%H_all_red = [H_all(:,1:nSampled) zeros(n, nStep_red)];
+%t_all_red = [t_all(:,1:nSampled) zeros(1, nStep_red)];
+%
+%H = (H_all(2:end-1,nSampled)'*Uhat)'; % starting from the end of sampling
+%t = (nSampled-1)*dt;
+%H_red = Uhat'*H;
+%
+%for i = nSampled+1:nStep
+%    
+%    Hsurf = current(t, t_pulse)/a; % magnetic field on the surface (z=a) from Amper's law
+%    H_all_red = [0;H_red;Hsurf];
+%    t_all(i) = t;
+%   
+%    dHdt_red = fun_red(t,H_red); % dH/dt derivative
+%     
+%    H_red = H_red + dt*dHdt_red;
+%    
+%    H_all(:, i) = [0; H; Hsurf]; % vector of H values along z
+%    t = t + dt;
+%end
 
-
-% the reduced version of M is missing...
-% T = [zeros(1,redOrder); Uhat; zeros(1,redOrder)];
-% T(1,1)=1;
-% T()
-% 
-% M_red = Uhat'*M*[zeros(1,redOrder); Uhat; zeros(1,redOrder)];

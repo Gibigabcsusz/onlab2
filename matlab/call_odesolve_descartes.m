@@ -17,9 +17,14 @@ Tmax = 2*t_pulse;   % time window of simulation
 dt   = 2e-7;        % [s] time step
 nSampled = 800;     % number of samples from the full model
 redOrder = 5;       % number of base vectors for reduced model
+nPlot = 100;        % number of time sample points to plot to keep plot file size small
 
+
+
+nStep = ceil(Tmax/dt); % no. of steps
 z  = linspace(0, a, n); 
 dz = z(2)-z(1);
+vPlot=1:round(nStep/nPlot):nStep; % time sample points for plotting
 
 sigma = 35e6;       % [S/m] conductivity
 mur   = 1;
@@ -36,7 +41,6 @@ H_init = zeros(n-2,1); % initial condition
 
 fun = @(t,H) odefun_plate_Hy_FD(t, H, a, M, t_pulse, mu, sigma); 
 
-nStep = ceil(Tmax/dt); % no. of steps
 
 H_all = zeros(n, nStep);
 t_all = zeros(1, nStep);
@@ -55,10 +59,11 @@ for i = 1:nStep
     t = t + dt;
 end
 
+
 figure(1), hold on
-plot(t_all, H_all(end,:), 'b-', 'linewidth', 1)
-plot(t_all, H_all(round(2/3*n),:), 'r-', 'linewidth', 1)
-plot(t_all, H_all(round(1/3*n),:), 'g-', 'linewidth', 1)
+plot(t_all(vPlot), H_all(end,vPlot), 'b-', 'linewidth', 1)
+plot(t_all(vPlot), H_all(round(2/3*n),vPlot), 'r-', 'linewidth', 1)
+plot(t_all(vPlot), H_all(round(1/3*n),vPlot), 'g-', 'linewidth', 1)
 xlabel('t (s)')
 ylabel('H_y (A/m)')
 legend('z=a', 'z=(2/3)a', 'z=(1/3)a')
@@ -89,7 +94,7 @@ T(end,end)=1;
 M_red = Uhat'*M*T;
 fun_red = @(t,H_red) odefun_plate_Hy_FD_red(t, H_red, a, M_red, t_pulse, mu, sigma); 
 
-nStep_red = nStep-nSampled; % no. of steps
+nStep_red = nStep-nSampled; % no. of new steps
 
 
 
@@ -122,9 +127,9 @@ H_aa(2:end-1,:) = Uhat*H_all_red(2:end-1,:);
 
 
 figure(1), hold on
-plot(t_all, H_aa(end,:), 'b--', 'linewidth', 2)
-plot(t_all, H_aa(round(2/3*n),:), 'r--', 'linewidth', 2)
-plot(t_all, H_aa(round(1/3*n),:), 'g--', 'linewidth', 2)
+plot(t_all(vPlot), H_aa(end,vPlot), 'b--', 'linewidth', 2)
+plot(t_all(vPlot), H_aa(round(2/3*n),vPlot), 'r--', 'linewidth', 2)
+plot(t_all(vPlot), H_aa(round(1/3*n),vPlot), 'g--', 'linewidth', 2)
 
 ylim([0,200])
 xlabel('t (s)')

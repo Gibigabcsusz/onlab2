@@ -1,10 +1,6 @@
-function M = matrix_for_rotrot_descartes(z)
+function M = matrix_for_rotrot_descartes(n,d)
 
 % the vector z goes from zero to the thickness of the plate in n steps
-
-n = length(z);
-
-d = z(2)-z(1);
 
 Mdiag  = eye(n-2)*( 2/d^2);
 Mleft  = eye(n-2)*(-1/d^2);

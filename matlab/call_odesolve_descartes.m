@@ -15,6 +15,8 @@ a = 0.005;          % [m] thickness of the plate
 t_pulse = 1e-3;     % [s] pulse duration
 Tmax = 2*t_pulse;   % time window of simulation
 dt   = 2e-7;        % [s] time step
+nSampled = 800;     % number of samples from the full model
+redOrder = 5;       % number of base vectors for reduced model
 
 z  = linspace(0, a, n); 
 dz = z(2)-z(1);
@@ -28,8 +30,7 @@ alpha = 1/(mu*sigma);
 F = alpha*dt/dz^2;
 disp("F="), disp(F) % convergence factor (must be <0.5)
 
-
-M = matrix_for_rotrot_descartes(z);
+M = matrix_for_rotrot_descartes(n,dz);
 
 H_init = zeros(n-2,1); % initial condition
 
@@ -54,56 +55,79 @@ for i = 1:nStep
     t = t + dt;
 end
 
-% figure(1)
-% plot(t_all, H_all(end,:), t_all, H_all(round(2/3*n),:), t_all, H_all(round(1/3*n),:))
-% xlabel('t (s)')
-% ylabel('H_y (A/m)')
-% legend('z=a', 'z=(2/3)a', 'z=(1/3)a')
+figure(1), hold on
+plot(t_all, H_all(end,:), 'b-', 'linewidth', 1)
+plot(t_all, H_all(round(2/3*n),:), 'r-', 'linewidth', 1)
+plot(t_all, H_all(round(1/3*n),:), 'g-', 'linewidth', 1)
+xlabel('t (s)')
+ylabel('H_y (A/m)')
+legend('z=a', 'z=(2/3)a', 'z=(1/3)a')
 
 %%
 % reduced order approximation
-nSampled = 20;
 X = H_all(2:end-1,1:nSampled);
-redOrder = 3; % number of base vectors for reduced model
 
 [U,S,V]=svd(X);
-figure(2)
-semilogy(diag(S)/sum(diag(S)), 'kx')
-title('Singular values of snapshot matrix')
-xlabel('i (no. of singular value)')
-ylabel('\sigma /\Sigma \sigma_i')
-S
+%figure(2)
+%semilogy(diag(S)/sum(diag(S)), 'kx')
+%title('Singular values of snapshot matrix')
+%xlabel('i (no. of singular value)')
+%ylabel('\sigma /\Sigma \sigma_i')
+%S
 Uhat = U(:,1:redOrder); % new base, columns are base vectors
 
-%% matrix for the construction on M_red
-%T=[zeros(1,redOrder); Uhat; zeros(1,redOrder)];
-%T(redOrder,redOrder+2)=1;
-%
-%% projecting M to the reduced base
-%M_red = Uhat'*M*T;
-%M_red
-%fun_red = @(t,H_red) odefun_plate_Hy_FD_red(t, H_red, a, M_red, t_pulse); 
-%
-%nStep_red = nStep-nSampled; % no. of steps
-%
-%H_all_red = [H_all(:,1:nSampled) zeros(n, nStep_red)];
-%t_all_red = [t_all(:,1:nSampled) zeros(1, nStep_red)];
-%
-%H = (H_all(2:end-1,nSampled)'*Uhat)'; % starting from the end of sampling
-%t = (nSampled-1)*dt;
-%H_red = Uhat'*H;
-%
-%for i = nSampled+1:nStep
-%    
-%    Hsurf = current(t, t_pulse)/a; % magnetic field on the surface (z=a) from Amper's law
-%    H_all_red = [0;H_red;Hsurf];
-%    t_all(i) = t;
-%   
-%    dHdt_red = fun_red(t,H_red); % dH/dt derivative
-%     
-%    H_red = H_red + dt*dHdt_red;
-%    
-%    H_all(:, i) = [0; H; Hsurf]; % vector of H values along z
-%    t = t + dt;
-%end
+% matrix for the construction on M_red
+T=zeros(n,redOrder+2);
+T(2:end-1,2:end-1)=Uhat;
+T(end,end)=1;
+% other construction for the same T
+%T2=[zeros(n,1), [zeros(1,redOrder); Uhat; zeros(1,redOrder)], zeros(n,1)];
+%T2(end,end)=1;
+
+
+% projecting M to the reduced base
+M_red = Uhat'*M*T;
+fun_red = @(t,H_red) odefun_plate_Hy_FD_red(t, H_red, a, M_red, t_pulse, mu, sigma); 
+
+nStep_red = nStep-nSampled; % no. of steps
+
+
+
+H_all_red = [T'*H_all(:,1:nSampled) zeros(redOrder+2, nStep_red)];
+t_all_red = [t_all(:,1:nSampled) zeros(1, nStep_red)];
+
+H = H_all(2:end-1,nSampled); % starting from the end of sampling
+H_red = Uhat'*H;
+t = nSampled*dt;
+
+for i = nSampled+1:nStep
+    
+    Hsurf = current(t, t_pulse)/a; % magnetic field on the surface (z=a) from Amper's law
+    H_all_red(:,i) = [0;H_red;Hsurf];
+    t_all(i) = t;
+   
+    dHdt_red = fun_red(t,H_red); % dH/dt derivative
+     
+    H_red = H_red + dt*dHdt_red;
+    
+    t = t + dt;
+end
+
+
+% transforming back from the reduced base to the original base
+H_aa = zeros(n,nStep);
+H_aa(1,:) = H_all_red(1,:);
+H_aa(end,:) = H_all_red(end,:);
+H_aa(2:end-1,:) = Uhat*H_all_red(2:end-1,:);
+
+
+figure(1), hold on
+plot(t_all, H_aa(end,:), 'b--', 'linewidth', 2)
+plot(t_all, H_aa(round(2/3*n),:), 'r--', 'linewidth', 2)
+plot(t_all, H_aa(round(1/3*n),:), 'g--', 'linewidth', 2)
+
+ylim([0,200])
+xlabel('t (s)')
+ylabel('H_y (A/m)')
+legend('z=a', 'z=(2/3)a', 'z=(1/3)a', 'z=a, approx', 'z=(2/3)a, approx', 'z=(1/3)a, approx')
 

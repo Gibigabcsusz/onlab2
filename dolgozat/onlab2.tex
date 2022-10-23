@@ -52,12 +52,12 @@
     \centering
     \includegraphics[width=0.6\textwidth]{kep/bme_logo.pdf} \\
     \vspace{0.5cm}
-    \large{\bf{Budapesti Műszaki és Gazdaságtudományi Egyetem}\\
-    \bf{Villamosmérnöki és Informatikai Kar}\\
-    \bf{Szélessávú Hírközlés és Villamosságtan Tanszék}}\\
+    \large{\bf Budapesti Műszaki és Gazdaságtudományi Egyetem \\
+    Villamosmérnöki és Informatikai Kar \\
+    Szélessávú Hírközlés és Villamosságtan Tanszék}\\
     \vspace{4cm}
-    \large{\bf{Önálló laboratórium 2 dolgozat}} \\
-    \vspace{1cm}
+    \large{Önálló laboratórium 2 dolgozat} \\
+    \vspace{2cm}
     \Large{\bf{Modell-redukció alkalmazása az elektromágneses térszámításban}} \\
     \vspace{2cm}
 }
@@ -74,27 +74,46 @@
 \begin{document}
     \maketitle
     \tableofcontents
-    \section{Meglátások}
-        Itt fogom leírni, hogy mit sikerült eddig felfognom az elméleti háttérből.
     \section{Bevezetés}
-        \subsection{POD madártávlatból}
-            A POD, vagyis a Proper Orthogonal Decomposition egy modellredukciós eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkolásával egy közelítő bázist lehet előállítani ($\Psi'$), ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkolás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
+            A POD, vagyis a Proper Orthogonal Decomposition, egy modellredukciós eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkolásával egy közelítő bázist lehet előállítani ($\Psi'$), ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkolás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
         \subsection{Felhasználási területek}
-            A POD eljárást számos tudományterületen sikeresen alkalmazták már.  Ezeknél a problémáknál az okozza általában a fő gondot, hogy a szimulált rendszer szabadsági fokainak száma nagyon nagy, emiatt egy-egy szimuláció nagyon sok ideig tart, pontatlanabb diszkretizált modell pedig fals eredményekre vezet. Lényeges felhasználási területek például: turbulens áramlások szimulációja; statisztikában az adathalmazok redukálása; szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás.
-        \subsection{Alkalmazás az elektromágneses térszámításban}
-            Az EM térszámításban többféle kontextusban is hasznos lehet a POD a futási idő  vagy a memóriafelhasználás jelentős csökkentésére. Az egyik megközelítésben egy végeselem modellben zajló tranziens folyamat lefolyására kaphatunk számítás szempontjából olcsó, közelítő megoldást. Ehhez először a teljes kérdéses időintervallum első töredék részére egy teljes értékű szimulációt futtatunk, amely viszonylag sok számítást igényel. Ennek a rövid részmegoldásnak az eredményei szolgálnak a POD bemenetéül. A POD ezek alapján meghatározza a rendszer dinamikájában megjelenő struktúrákat, majd csak a lényeges összetevőkre szorítkozva egy lecsökkentett szabadsági fokú rendszert szimulálunk tovább a hátralévő időben, ami már fajlagosan kevesebb számítást igényel.
-        \subsection{Egyéb megközelítések a POD használatához}
-            A fent vázolt, tranziens szimulációban történő alkalmazáson kívül más módokon is hasznosítható lehet a POD a térszámítási problémákban.
+            A POD eljárást számos tudományterületen sikeresen alkalmazták már, különböző területeken különböző néven szokták emlegetni gyakorlatilag ugyanezt az eljárást. Statisztikában főként Principal Component Analysis (PCA) néven fordul elő és nagy adathalmazok információtartalmának kinyerésére használják.
             \par
-            Optimalizálási feladatoknál szokott előfordulni az a probléma, hogy az optimalizációhoz használható paraméterek miatt exponenciálisan megnövekszik egy modell szabadsági fokainak a száma.
+            Ezeknél a problémáknál az okozza általában a fő gondot, hogy a szimulált rendszer szabadsági fokainak száma nagyon nagy, emiatt egy-egy szimuláció nagyon sok ideig tart, pontatlanabb diszkretizált modell pedig fals eredményekre vezet. Nagy adathalmazok redukálása esetén pedig lényeges, kezelhető méretű információtartalom kinyerésée szolgál. Lényeges felhasználási területek például: turbulens áramlások szimulációja; statisztikában és más területeken az adathalmazok redukálása; szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás; nemlineáris elektromágneses problémák (pl. motorok) szimulációja.
+        \subsection{Alkalmazás az elektromágneses térszámításban}
+            \label{sec:empod}
+            Az EM térszámításban többféle kontextusban is hasznos lehet a POD a futási idő  vagy a memóriafelhasználás jelentős csökkentésére. Az egyik megközelítésben egy végeselem modellben zajló tranziens folyamat lefolyására kaphatunk számítás szempontjából olcsó, közelítő megoldást. Ehhez először a teljes kérdéses időintervallum első töredék részére egy teljes értékű szimulációt futtatunk, amely viszonylag sok számítást igényel. Ennek a rövid részmegoldásnak az eredményei szolgálnak a POD bemenetéüli. A POD ezek alapján meghatározza a rendszer dinamikájában megjelenő struktúrákat, majd csak a lényeges összetevőkre szorítkozva egy lecsökkentett szabadsági fokú rendszert szimulálunk tovább a hátralévő időben, ami már időlépésenként sokkal kevesebb számítást igényel. Ez a módszer az 1980-as években született turbulens áramlások szimulációja kapcsán \cite{Sirovich}, amellyel a Method of Snapshots néven találkozhatunk.
+            \par
+            A fent vázolt, tranziens szimulációban történő alkalmazáson kívül más módokon is hasznosítható lehet a POD a térszámítási problémákban, de a dolgozatomban elsősorban ezzel a megközelítéssel foglalkozom.
+    \section{A POD-ról részletesebben}
+        A bevezetésben említettem, hogy az adathalmaz energiájának vagy információtartalmának szempontjából optimális a $\Psi$ bázis, de ez pontosításra szorul.
+        % TODO elvileg nem Sirovich találta ki, hanem J.L. Lumley 1969-ben a Weiss forráscikkem szerint. Utánanézni
         \subsection{A felbontás egyenletei}
+            A redukálandó adathalmaz méreteitől függően különböző számítási módok optimálisak a POD redukált bázisának előállításához. Az eredeti adathalmazt egy mátrixba rendezzük úgy, hogy az egyes mintákhoz artozó adatok vektorai (${\bf x}_i \in \mathbb{C}^n,~i \in \{1,~\hdots,~k\}$) a mátrix oszlopvektorai legyenek. Az így kapott mátrix (${\bf S}$) a snapshotmátrix vagy mintamátrix:
             \begin{align}
-                {\bf S}~=&~{\bf V \Sigma \adj{U}} \\
-                {\bf C}~=&~{\bf \adj{S} S} \\
-                {\bf C}~=&~{\bf U \Sigma \adj{V} V\Sigma \adj{U}} \\
-                {\bf C}~=&~{\bf U \Sigma}^2{\bf \adj{U}}
+                {\bf S} = & \left[ {\bf x}_1~{\bf x}_2~{\bf x}_3~\hdots~{\bf x}_k \right]
             \end{align}
-            Itt ${\bf S}$ a snapshot-mátrix, ${\bf V}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{U}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig a snapshotokból álló adathalmaz kovarianciamátrixa.
+            Az adott alkalmazástól függ, hogy ${\bf S}$-nek melyik mérete olyan nagy, hogy az gondot jelentsen. \Aref{sec:empod}. részben vázolt nagy szabadsági fokú szimulációknál az okozza a gondot, hogy az egy időlépéshez tartozó ${\bf x}_i$ dimenziószáma -- vagyis $n$ -- nagy, könnyen milliós nagyságrendű, miközben egy jó redukált bázis előállításához, $k \ll n$ db. ${\bf x}_i$ minta elég a dinamikus rendszerből. Ebben az esetben jól használható az ${\bf S}$ sajátfelbontása (SVD-je):
+            \begin{align}
+                \label{equ:svd}
+                {\bf S}~=&~{\bf U \Sigma \adj{V}}
+            \end{align}
+            Itt érdemes megállni és értelmezni a felbontásban szereplő mátrixokat és azok jelentését a modellezett rendszerrel kapcsolatban. \Aref{equ:svd}. egyenletben ${\bf U} \in \mathbb{C}^{n\times k}$ lesz a teljes $\Psi$ bázis vektorait (${\bf u}_i,~i \in \{1,~\hdots,~k\}$), mint oszlopvektorokat tartalmazó unitér mátrix, tehát az oszlopai egységvektorok. A ${\bf \Sigma} \in \mathbb{R}^{m\times m}~(m=min\{n,k\}=k)$ egy pozitív definit diagonálmátrix, aminek az $i$-eik diagonálelemei, $\sigma_i$ az ${\bf u}_i$-hez tartozó együttható, ami azt fejezi ki, hogy az adott bázisvektor mennyire fontos, mennyire járul hozzá általában a rendszer állapotához, más szóval a rendszer energiájának vagy információtartalmának mekkora része írható le az adott bázisvektorral. A ${\bf \Sigma}$ olyan felépítésű az SVD miatt, hogy a diagonálelemek csökkenő sorrendben szerepelnek az átlóban bal fentről jobbra lefelé haladva. A ${\bf U\Sigma} \in \mathbb{C}^{n\times m}$ szorzat tehát már az eredeti adatokhoz skálázott bázisvektorok mátrixának tekinthető, amelyben fontosság szerint csökkenő sorrendben szerepelnek egymás után a bázisvektorok. Tömören összefoglalva a ${\bf \adj{V}}$ mátrix a skálázott bázisvektorokhoz tartozó együtthatók mátrixa. A ${\bf \adj{V}}$ mátrix az $i$-edik ${\bf v}_i$ oszlopában tartalmazza az ${\bf x}_i$ mintavektor előállításához szükséges együtthatókat, amelyek a ${\bf U\Sigma}$ szorzat oszlopait súlyozzák:
+            \begin{align}
+                {\bf x}_i~=&~{\bf U\Sigma v}_i
+            \end{align}
+            Más szemszögből megközelítve a ${\bf \adj{V}}$ értelmezését, $v_{j,i}$, tehát ${\bf \adj{V}}$ $j$-edik sorának $i$-edik eleme (${\bf v}_i$ $j$-edik eleme) jelenti ${\bf u}_j \sigma_j$ hozzájárulását vagy súlyát ${\bf x}_i$-hez.
+            \par
+            Az ellenkező esetben, amikor $k$ nagy és emiatt $m=min\{n,k\}=n$, már számításigény szempontjából nem optimális ${\bf S}$ szinguláris érték szerinti felbontásának direkt kiszámolása, mert ez az immár $k \times k$ méretű ${\bf \adj{V}}$ mátrix kiszámolásával jár, ami a redukált modell létrehozása szempontjából lényegtelen. Ebben az esetben érdemesebb kiszámítani az adathalmaz kovarianciamátrixát, a ${\bf C} \in \mathbb{C}^{n \times n}$ mátrixot. Azért jutunk ezzel előrébb, mert \aref{equ:kovariancia}. egyenletben látható módon az ${\bf U}$ mátrixot megkaphatjuk a ${\bf C}$ sajátfelbontásából is. Mivel ${\bf C}$ szimmetrikus, ezért pozitív definit, emiatt mindig létezik sajátfelbontása.
+            \begin{align}
+            \begin{split}
+                \label{equ:kovariancia}
+                {\bf C}~=&~{\bf S \adj{S}} \\
+                =&~{\bf U \Sigma \adj{V} V\Sigma \adj{U}} \\
+                =&~{\bf U \Sigma}^2{\bf \adj{U}}
+            \end{split}
+            \end{align}
+            Itt ${\bf S}$ a snapshot-mátrix, ${\bf U}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{V}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig az ${\bf x}_i$ mintavektorokból álló adathalmaz kovarianciamátrixa.
     \section{\LaTeX~Próba}
         Lorem ipsum \cite{PGD}.
         \begin{align}

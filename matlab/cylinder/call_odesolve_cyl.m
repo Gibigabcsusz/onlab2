@@ -47,7 +47,7 @@ t_all = zeros(1, nStep);
 H = H_init;
 t = 0;
 
-%% solution using forward euler method
+%% full solution using forward euler method
 for i = 1:nStep
     Hsurf = current(t, t_pulse)/(2*pi*a); % magnetic field on the surface (r=a) from Amper's law
     H_all(:, i) = [0; H; Hsurf]; % vector of H values along z
@@ -57,20 +57,69 @@ for i = 1:nStep
     t = t + dt;
 end
 
-%% solution using the built-in ode45 solver
+%% full solution using the built-in ode45 solver
 t_range = [0, dt*nStep];
 [t_ode, H_ode] = ode45(fun, t_range, H_init);
+H_all_ode = [zeros(size(t_ode,1),1), H_ode; ];
+
+%% reduced order solution using Forward Euler method
+[U_fe, S_fe, V_fe] = svd(H_all(:,1:nSampled)); % reduced base for Forward Euler scheme
+U_hat_fe = U_fe(1:redOrder); % reduced base
+
+% matrix for the construction on M_red
+T_fe = zeros(n,redOrder+2);
+T_fe(2:end-1,2:end-1) = U_hat_fe;
+T_fe(end,end) = 1;
+
+% projecting M to the reduced base
+M_red_fe = U_hat_fe'*M*T_fe;
+fun_red_fe = @(t, H_red_fe) odefun_circularwire_Hphi_FD(t, H_red_fe, a, M_red_fe, t_pulse, mu, sigma);
+
+nStep_red = nStep-nSampled; % no. of new steps
+%% TODO lefele
+H_all_red = [T'*H_all(:,1:nSampled) zeros(redOrder+2, nStep_red)];
+t_all_red = [t_all(:,1:nSampled) zeros(1, nStep_red)];
+
+H = H_all(2:end-1,nSampled); % starting from the end of sampling
+H_red_fe = Uhat'*H;
+t = nSampled*dt;
+
+for i = nSampled+1:nStep
+    Hsurf = current(t, t_pulse)/(2*pi*a); % magnetic field on the surface (r=a) from Amper's law
+    H_all_red(:,i) = [0; H_red; Hsurf];
+    t_all(i) = t;
+    dHdt_red_fe = fun_red_fe(t, H_red_fe); % dH/dt derivative
+    H_red_fe = H_red_fe + dt*dHdt_red_fe;
+    t = t + dt;
+end
+
+% converting back from reduced base to original base
+H_aa_fe = zeros(n,nStep);
+H_aa_fe(1,:) = H_all_red(1,:);
+H_aa_fe(end,:) = H_all_red(end,:);
+H_aa_fe(2:end-1,:) = Uhat*H_all_red(2:end-1,:);
+
+
+%% reduced order solution using ode45 method
+[U_ode, S_ode, V_ode] = svd(H_ode(:,1:nSampled)); % reduced base for Forward Euler scheme
+U_hat_ode = U_ode(1:redOrder);  % reduced base
+
+% matrix for the construction on M_red
+T_ode = zeros(n,redOrder+2);
+T_ode(2:end-1,2:end-1) = U_hat_ode;
+T_ode(end,end) = 1;
+
+% projecting M to the reduced base
+M_red_ode = U_hat_ode'*M*T_ode;
+fun_red_ode = @(t, H_red_ode) odefun_circularwire_Hphi_FD(t, H_red_ode, a, M_red_ode, t_pulse, mu, sigma); 
+
 
 %% calculate E_z from H_phi using E = (1/sigma)*rot(H)
-
 s = linspace(dr/2, a-dr/2, n-1); % grid shifted by dr/2
-
 rH_all = diag(r)*H_all; % r*H
-
 E_all = diag(1./s)*diff(rH_all)/dr/sigma; % 1/r * (d(rH)/dr) / sigma -- expanding rot in cyl coords
 
 %% animate the solution
-
 minH = min(min(H_all));
 minE = min(min(E_all));
 maxH = max(max(H_all));

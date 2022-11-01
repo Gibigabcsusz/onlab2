@@ -18,16 +18,13 @@ dt   = 2e-7;        % [s] time step
 nSampled = 800;     % number of samples from the full model
 redOrder = 5;       % number of base vectors for reduced model
 nPlot = 100;        % number of time sample points to plot to keep plot file size small
-
-
+sigma = 35e6;       % [S/m] conductivity
+mur   = 1;          % relative permeability
 
 nStep = ceil(Tmax/dt); % no. of steps
 z  = linspace(0, a, n); 
 dz = z(2)-z(1);
 vPlot=1:round(nStep/nPlot):nStep; % time sample points for plotting
-
-sigma = 35e6;       % [S/m] conductivity
-mur   = 1;
 
 mu0   = pi*4e-7;    % [Vs/Am]
 mu    = mu0*mur;

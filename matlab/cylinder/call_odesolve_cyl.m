@@ -18,14 +18,18 @@ t_pulse = 5e-4;     % [s] pulse duration, worth to try:
 Tmax = 2*t_pulse;   % time window of simulation
 dt   = 2e-7;        % [s] time step
 animate = 0;        % 1: animate soltion, otherwise: don't
-
+nSampled = 800;     % number of samples from the full model
+redOrder = 5;       % number of base vectors for reduced model
+nPlot = 100;        % number of time sample points to plot to keep plot file size small
+mur = 1;            % relative permeability
+sigma = 35e6;       % [S/m] conductivity
 
 r  = linspace(0, a, n);
 dr = r(2)-r(1);
 
 mu0   = pi*4e-7;    % [Vs/Am]
-sigma = 35e6;       % [S/m] conductivity
-alpha = 1/(mu0*sigma);
+mu = mu0*mur;
+alpha = 1/(mu*sigma);
 F = alpha*dt/dr^2;
 disp("F="), disp(F) % convergence factor (must be <0.5 in the Descartes-case!)
 
@@ -33,7 +37,7 @@ M = matrix_for_rotrot_cyl(r);
 
 H_init = zeros(n-2,1);
 
-fun = @(t,H) odefun_circularwire_Hphi_FD(t, H, a, M, t_pulse); 
+fun = @(t,H) odefun_circularwire_Hphi_FD(t, H, a, M, t_pulse, mu, sigma); 
 
 nStep = ceil(Tmax/dt); % no. of steps
 
@@ -42,21 +46,20 @@ t_all = zeros(1, nStep);
 
 H = H_init;
 t = 0;
+
+%% solution using forward euler method
 for i = 1:nStep
     Hsurf = current(t, t_pulse)/(2*pi*a); % magnetic field on the surface (r=a) from Amper's law
     H_all(:, i) = [0; H; Hsurf]; % vector of H values along z
     t_all(i) = t;
-   
     dHdt = fun(t,H); % dH/dt derivative
-     
     H = H + dt*dHdt;
-    
     t = t + dt;
 end
 
+%% solution using the built-in ode45 solver
 t_range = [0, dt*nStep];
-[t_ode, H_ode] = ode45(fun, t_range, H_init, "RelTol", 0.0001);
-
+[t_ode, H_ode] = ode45(fun, t_range, H_init);
 
 %% calculate E_z from H_phi using E = (1/sigma)*rot(H)
 
@@ -73,6 +76,7 @@ minE = min(min(E_all));
 maxH = max(max(H_all));
 maxE = max(max(E_all));
 
+%% animating the solution
 if(animate==1)
 	figure(1)
 	for i = 1:round(nStep/100):nStep
@@ -95,18 +99,21 @@ if(animate==1)
 	end
 end
 
-
-%%
+%% comparing the two solutions: Forward Euler and ode45
 figure(2)
+hold on
 plot(t_all, H_all(end,:), t_all, H_all(round(2/3*n),:), t_all, H_all(round(1/3*n),:))
 xlabel('t (s)')
 ylabel('H_{\phi} (A/m)');
 legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
 title('Forward Euler')
+hold off
 
 figure(3)
-plot(t_all, H_all(end,:), t_ode, H_ode(:,round(2/3*n)), t_ode, H_ode(:,round(1/3*n)))
+hold on
+plot(t_all, H_all(end,:), t_ode, H_ode(:,round(2/3*n)-1), t_ode, H_ode(:,round(1/3*n)-1))
 xlabel('t (s)')
 ylabel('H_{\phi} (A/m)');
 legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
 title('ode45')
+hold off

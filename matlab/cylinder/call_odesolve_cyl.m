@@ -62,18 +62,20 @@ t_range = [0, dt*nStep];
 [t_ode, H_ode] = ode45(fun, t_range, H_init);
 H_all_ode = [zeros(size(t_ode,1),1), H_ode; ];
 
-%% reduced order solution using Forward Euler method
-[U_fe, S_fe, V_fe] = svd(H_all(:,1:nSampled)); % reduced base for Forward Euler scheme
-U_hat_fe = U_fe(1:redOrder); % reduced base
+%% reduced order preparation
+[U, S, V] = svd(H_all(:,1:nSampled)); % reduced base for Forward Euler scheme
+U_hat = U(:,1:redOrder); % reduced base
 
 % matrix for the construction on M_red
-T_fe = zeros(n,redOrder+2);
-T_fe(2:end-1,2:end-1) = U_hat_fe;
-T_fe(end,end) = 1;
+T = zeros(n,redOrder+2);
+T(2:end-1,2:end-1) = U_hat;
+T(end,end) = 1;
 
 % projecting M to the reduced base
-M_red_fe = U_hat_fe'*M*T_fe;
-fun_red_fe = @(t, H_red_fe) odefun_circularwire_Hphi_FD(t, H_red_fe, a, M_red_fe, t_pulse, mu, sigma);
+M_red = U_hat'*M*T;
+
+%% reduced order solution using Forward Euler method
+fun_red = @(t, H_red) odefun_circularwire_Hphi_FD(t, H_red, a, M_red, t_pulse, mu, sigma);
 
 nStep_red = nStep-nSampled; % no. of new steps
 %% TODO lefele
@@ -81,7 +83,7 @@ H_all_red = [T'*H_all(:,1:nSampled) zeros(redOrder+2, nStep_red)];
 t_all_red = [t_all(:,1:nSampled) zeros(1, nStep_red)];
 
 H = H_all(2:end-1,nSampled); % starting from the end of sampling
-H_red_fe = Uhat'*H;
+H_red = Uhat'*H;
 t = nSampled*dt;
 
 for i = nSampled+1:nStep

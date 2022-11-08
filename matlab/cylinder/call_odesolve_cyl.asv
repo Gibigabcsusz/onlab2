@@ -176,29 +176,50 @@ end
 %% comparing the two Forward Euler solutions
 figure(2)
 hold on
-plot(t_all, H_all(end,:), '--', 'linewidth', 1.5)
-plot(t_all, H_all(round(2/3*n),:), '--', 'linewidth', 1.5)
-plot(t_all, H_all(round(1/3*n),:), '--', 'linewidth', 1.5)
+plot(t_all, H_all(end,:), ':', 'linewidth', 1.5)
+plot(t_all, H_all(round(2/3*n),:), ':', 'linewidth', 1.5)
+plot(t_all, H_all(round(1/3*n),:), ':', 'linewidth', 1.5)
+axis([0 Tmax minH maxH])
+xlabel('t (s)')
+ylabel('H_{\phi} (A/m)');
+legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
+title('Forward Euler')
+hold off
+
+figure(4)
+hold on
+plot(t_all, H_aa_fe(end,:), 'linewidth', 1.5)
 plot(t_all, H_aa_fe(round(2/3*n),:), 'linewidth', 1.5)
 plot(t_all, H_aa_fe(round(1/3*n),:), 'linewidth', 1.5)
 axis([0 Tmax minH maxH])
 xlabel('t (s)')
 ylabel('H_{\phi} (A/m)');
-legend('r=a', 'r=(2/3)a', 'r=(1/3)a', 'r=(2/3)a (reduced)', 'r=(1/3)a (reduced)')
-title('Full and Reduced Order Forward Euler')
+legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
+title('Reduced Order Forward Euler')
 hold off
 
 %% comparing the two ode45 solutions
+
 figure(3)
 hold on
-plot(t_all, H_all(end,:), '--', 'linewidth', 1.5)
-plot(t_ode, H_all_ode(round(2/3*n),:), '--', 'linewidth', 1.5)
-plot(t_ode, H_all_ode(round(1/3*n),:), '--', 'linewidth', 1.5)
+plot(t_all, H_all(end,:), 'linewidth', 1.5)
+plot(t_ode, H_all_ode(round(2/3*n),:), 'linewidth', 1.5)
+plot(t_ode, H_all_ode(round(1/3*n),:), 'linewidth', 1.5)
+axis([0 Tmax minH maxH])
+xlabel('t (s)')
+ylabel('H_{\phi} (A/m)');
+legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
+title('ode45')
+hold off
+
+figure(5)
+hold on
+plot(t_all_ode_red, H_aa_ode(end,:), 'linewidth', 1.5)
 plot(t_all_ode_red, H_aa_ode(round(2/3*n),:), 'linewidth', 1.5)
 plot(t_all_ode_red, H_aa_ode(round(1/3*n),:), 'linewidth', 1.5)
 axis([0 Tmax minH maxH])
 xlabel('t (s)')
 ylabel('H_{\phi} (A/m)');
-legend('r=a', 'r=(2/3)a', 'r=(1/3)a', 'r=(2/3)a (reduced)', 'r=(1/3)a (reduced)')
-title('Full and Reduced Order ode45')
+legend('r=a', 'r=(2/3)a', 'r=(1/3)a')
+title('Reduced Order ode45')
 hold off

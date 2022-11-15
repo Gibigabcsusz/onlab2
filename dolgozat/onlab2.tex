@@ -21,6 +21,7 @@
 %\usepackage{subcaption}
 %\usepackage{enumerate}
 %\usepackage{psfrag}
+\usepackage{siunitx}
 \usepackage[left=20mm,right=20mm,top=20mm,bottom=25mm]{geometry}
 %\usepackage[left=10mm,right=10mm,top=10mm,bottom=15mm]{geometry} %landscape
 %\usepackage[hyphenbreaks]{breakurl}
@@ -35,13 +36,13 @@
 \usepackage{xcolor}
 \usepackage[a-3u]{pdfx}
 \hypersetup{
-	colorlinks,
-%	linkcolor={red!50!black},
-	linkcolor={black},
-%	citecolor={blue!50!black},
-	citecolor={black},
-%	urlcolor={blue!80!black}
-	urlcolor={blue!80!black}
+    colorlinks,
+%    linkcolor={red!50!black},
+    linkcolor={black},
+%    citecolor={blue!50!black},
+    citecolor={black},
+%    urlcolor={blue!80!black}
+    urlcolor={blue!80!black}
 }
 
 \pagestyle{plain} 
@@ -75,20 +76,27 @@
     \maketitle
     \tableofcontents
     \section{Bevezetés}
-            A POD, vagyis a Proper Orthogonal Decomposition, egy bázistranszformációs eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkításával egy közelítő bázist lehet előállítani ($\Psi'$), ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkítás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
-		\subsection{A módszer eredete}
-            A POD eredete szorosan kapcsolódik a turbulens áramlások tanulmányozásához, szimulációjához, ami egy hírhedten nehezen megfogható probléma. A módszer gyökerei az 1930-as, '40-es évekig nyúlnak vissza, amikor olyan tudományos problémákat próbáltak statisztikai módszerekkel megközelíteni, amelyeknek a megoldása valamilyen folytonos értékű függvény, sok esetben sztochasztikus folyamat. Egy jeles személy ebből a kezdeti időszakból Kosambi \cite{Kosambi}. Sikeresen alkalmaz években született turbulens áramlások szimulációja kapcsán \cite{Sirovich}, amellyel a Method of Snapshots néven találkozhatunk.
-
-			 % Narasimha, R. Kosambi and proper orthogonal decomposition. Reson 16, 574–581 (2011). https://doi.org/10.1007/s12045-011-0062-8
-        \subsection{Felhasználási területek}
-            Az eljárást számos tudományterületen sikeresen alkalmazták már, különböző területeken különböző néven szokták emlegetni gyakorlatilag ugyanezt az eljárást. Statisztikában főként Principal Component Analysis (PCA) néven fordul elő és nagy adathalmazok információtartalmának kinyerésére használják. Találkozhatunk még vele az irodalomban Karhunen–Lo\`eve Expansion néven is. A turbulens áramlások kutatásával kapcsolatban pedig Method of Snapshots néven is ismert az 1980-as évektől \cite{Sirovich}.
-            % PCA-hoz:      Jolliffe Ian T. and Cadima Jorge 2016Principal component analysis: a review and recent developmentsPhil. Trans. R. Soc. A.3742015020220150202 http://doi.org/10.1098/rsta.2015.0202
+            A POD, vagyis a Proper Orthogonal Decomposition, egy bázistranszformációs eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkításával egy $\Psi'$ közelítő bázist lehet előállítani, ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkítás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
+        \subsection{A módszer eredete}
+            A módszer gyökerei az '40-es évekig nyúlnak vissza, amikor olyan tudományos problémákat próbáltak statisztikai módszerekkel megközelíteni, amelyeknek a megoldása valamilyen folytonos értékű függvény, sok esetben sztochasztikus folyamat. Egy jeles személy ebből a kezdeti időszakból Damodar Dharmananda Kosambi \cite{Kosambi11} indiai matematikus, aki a POD alapját képező (Kosambi--)Karhunen–Lo\`eve Expansion, vagyis Karhunen–Lo\`eve felbontás atyja. A Karhunen–Lo\`eve felbontás sztochasztikus folyamatok olyan reprezentálását teszi lehetővé, ahol a sztochasztikus folyamatot egy végtelen összeg alakjában írjuk fel. Ha ebből az összegből csak az első véges sok $n$ db. tényezőt hagyjuk meg (csonkítjuk a felbontást), akkor a kapott összegnek a lehető legkisebb a négyzetes hibája az eredeti sztochasztikus folyamathoz képest \cite{Aadithya18}.
             \par
-            Ezeknél a problémáknál az okozza általában a fő gondot, hogy a szimulált rendszer szabadsági fokainak száma nagyon nagy, emiatt egy-egy szimuláció nagyon sok ideig tart, pontatlanabb diszkretizált modell pedig fals eredményekre vezet. Nagy adathalmazok redukálása esetén pedig lényeges, kezelhető méretű információtartalom kinyerésée szolgál. Lényeges felhasználási területek például: turbulens áramlások szimulációja; statisztikában és más területeken az adathalmazok redukálása; szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás; nemlineáris elektromágneses problémák (pl. motorok) szimulációja.
+            
+        \subsection{Felhasználási területekről általában}
+            Az eljárást számos tudományterületen sikeresen alkalmazták már, különböző területeken különböző néven szokták emlegetni gyakorlatilag ugyanezt az eljárást. Statisztikában főként Principal Component Analysis (PCA) néven fordul elő és nagy adathalmazok információtartalmának kinyerésére használják \cite{Jolliffe16}. Ahogy fent emlytettem, találkozhatunk még vele az irodalomban Karhunen–Lo\`eve Expansion néven is, elsősorban a sztochasztikus folyamatok kapcsán \cite{Aadithya18}. A turbulens áramlások kutatásával kapcsolatban pedig Method of Snapshots néven is ismert az 1980-as évektől \cite{Sirovich}.
+            \par
+            Lényeges felhasználási területek például: turbulens áramlások szimulációja; statisztikában és más területeken az adathalmazok redukálása \cite{Jolliffe16}; szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás; nemlineáris elektromágneses problémák (pl. motorok) szimulációja \cite{Henneron14}.
+        \subsection{Problémakörök}
+            A felsorolt problémák, amelyeknél segítséget nyújthat a POD, különböző kategóriákba sorolhatóak.
+            \par
+            Elsősorban statisztikában merül fel az a gond manapság, hogy egy nagyon sok bejegyzést tartalmazó adathalmaz áll rendelkezésre, amelynek minden bejegyzése sokdimenziós, emiatt az adatok által hordozott információ nehezen hasznosítható. Ez az információkinyerés annak ellenére is problémás, hogy a sok rendelkezésre álló adat összesen sok információt hordoz magában. Ekkor a POD (PCA) segítségével kinyerhetők az adathalmazt jól leíró, jellegzetes mintázatok, amelyek a hasznos információ nagy részét magukban hordozzák.
+            \par
+            A szimulációk esetében más a helyzet. Itt az jelenti a gondot, hogy a szimulált modell nagyon részletes, például nagyon sok (könnyen $10^6$ -- $10^9$ nagyságrendű) végeselemet tartalmaz, emiatt a szimuláció futtatása sok számítógép erőforrást használ fel. Egyrészt a megoldás memóriában való tárolása is problémás lehet, másrészt a végeselemek módszerénél maradva nagyon nagy egyenletrendszert kell megoldani, ami sok processzoridőt igényel, ami miatt sokáig tart a szimuláció. Ekkor a POD segítségével a ténylegesen megoldandó egyenletrendszer és a megoldás méretét is nagyságrendekkel csökkenteni lehet. Ez úgy történhet, hogy valamilyen előzetes szimuláció eredményét felhasználva az adott modellhez tartozó jellegzetes részmegoldások lineáris kombinációjaként igyekszünk előállítani egy az eredeti modellhez képest is közelítő megoldást, aminek sokkal kisebb az erőforrásigénye.
         \subsection{Alkalmazás az elektromágneses térszámításban}
             \label{sec:empod}
-            Az EM térszámításban többféle kontextusban is hasznos lehet a POD a futási idő  vagy a memóriafelhasználás jelentős csökkentésére. Az egyik megközelítésben egy végeselem modellben zajló tranziens folyamat lefolyására kaphatunk számítás szempontjából olcsó, közelítő megoldást. Ehhez először a teljes kérdéses időintervallum első töredék részére egy teljes értékű szimulációt futtatunk, amely viszonylag sok számítást igényel. Ennek a rövid részmegoldásnak az eredményei szolgálnak a POD bemenetéüli. A POD ezek alapján meghatározza a rendszer dinamikájában megjelenő struktúrákat, majd csak a lényeges összetevőkre szorítkozva egy lecsökkentett szabadsági fokú rendszert szimulálunk tovább a hátralévő időben, ami már időlépésenként sokkal kevesebb számítást igényel.             \par
+            Az EM térszámításban többféle kontextusban is hasznos lehet a POD a futási idő  vagy a memóriafelhasználás jelentős csökkentésére. Az egyik megközelítésben egy időtartománybeli végeselem modellben zajló tranziens folyamat lefolyására kaphatunk számítás szempontjából olcsó, közelítő megoldást. Ehhez először a teljes kérdéses időintervallum első töredék részére egy teljes értékű szimulációt futtatunk, amely viszonylag sok számítást igényel. Ennek a rövid részmegoldásnak az eredményei szolgálnak a POD bemenetéüli. A POD ezek alapján meghatározza a rendszer dinamikájában megjelenő struktúrákat, majd csak a lényeges összetevőkre szorítkozva egy lecsökkentett szabadsági fokú rendszert szimulálunk tovább a hátralévő időben, ami már időlépésenként sokkal kevesebb számítást igényel.
+            \par
             A fent vázolt, tranziens szimulációban történő alkalmazáson kívül más módokon is hasznosítható lehet a POD a térszámítási problémákban, de a dolgozatomban elsősorban ezzel a megközelítéssel foglalkozom.
+            %TODO
     \section{A POD-ról részletesebben}
         A bevezetésben említettem, hogy az adathalmaz energiájának vagy információtartalmának szempontjából optimális a $\Psi$ bázis, de ez pontosításra szorul.
         \subsection{A felbontás egyenletei}
@@ -107,7 +115,7 @@
             \end{align}
             Más szemszögből megközelítve a ${\bf \adj{V}}$ értelmezését, $v_{j,i}$, tehát ${\bf \adj{V}}$ $j$-edik sorának $i$-edik eleme (${\bf v}_i$ $j$-edik eleme) jelenti ${\bf u}_j \sigma_j$ hozzájárulását vagy súlyát ${\bf x}_i$-hez.
             \par
-            Az ellenkező esetben, amikor $k$ nagy és emiatt $m=min\{n,k\}=n$, már számításigény szempontjából nem optimális ${\bf S}$ szinguláris érték szerinti felbontásának direkt kiszámolása, mert ez az immár $k \times k$ méretű ${\bf \adj{V}}$ mátrix kiszámolásával jár, ami a redukált modell létrehozása szempontjából lényegtelen. Ebben az esetben érdemesebb kiszámítani az adathalmaz kovarianciamátrixát, a ${\bf C} \in \mathbb{C}^{n \times n}$ mátrixot. Azért jutunk ezzel előrébb, mert \aref{equ:kovariancia}. egyenletben látható módon az ${\bf U}$ mátrixot megkaphatjuk a ${\bf C}$ sajátfelbontásából is. Mivel ${\bf C}$ szimmetrikus, ezért pozitív definit, emiatt mindig létezik sajátfelbontása.
+            Az ellenkező esetben, amikor $k$ nagy és emiatt $m=min\{n,k\}=n$, már számításigény szempontjából nem optimális ${\bf S}$ szinguláris érték szerinti felbontásának direkt kiszámolása, mert ez az immár $k \times k$ méretű ${\bf \adj{V}}$ mátrix kiszámolásával jár, ami a redukált modell létrehozása szempontjából lényegtelen. Ebben az esetben érdemesebb kiszámítani az adathalmaz kovarianciamátrixát, a ${\bf C} \in \mathbb{C}^{n \times n}$ mátrixot. Azért jutunk ezzel előrébb, mert \aref{equ:kovariancia}. egyenletben látható módon az ${\bf U}$ mátrixot megkaphatjuk a ${\bf C}$ spektrálfelbontásából is. Mivel ${\bf C}$ szimmetrikus, ezért pozitív definit, emiatt mindig létezik spektrálfelbontása.
             \begin{align}
             \begin{split}
                 \label{equ:kovariancia}

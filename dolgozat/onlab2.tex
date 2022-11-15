@@ -125,6 +125,10 @@
             \end{split}
             \end{align}
             Itt ${\bf S}$ a snapshot-mátrix, ${\bf U}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{V}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig az ${\bf x}_i$ mintavektorokból álló adathalmaz kovarianciamátrixa.
+    \section{Példa szimuláció}
+        A Proper Orthogonal Decomposition működésének demonstrálására a konzulensem, Dr. Bilicz Sándor segítségével írtam egy MATLAB szkriptet. A szkript egy egydimenziós végeselem modell tranziens viselkedését szimulálja, pontosabban az elektromos és mágneses tár alakulását. A szimulációval egy kör keresztmetszetű, végtelen hosszú, véges vezetőképességű vezetőben létrejövő mágneses és elektromos teret vizsgáltam. A vezető keresztmetszetére elő van írva az összesített áram időfüggvénye, de a skin-hatás miatt a vezető belsejében nem egyenletes az áramsűrűség, hanem a sugár mentén haladva változik.
+        \par
+        A modell például egy villámhárító vezetőjében létrejövő elektromágneses tér alakulásának a vizsgálatára használható, amikor a villám meghatározza a villámhárítón folyó áramot.
     \section{\LaTeX~Próba}
         Lorem ipsum \cite{PGD}.
         \begin{align}

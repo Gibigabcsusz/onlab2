@@ -21,7 +21,8 @@ animate = 0;        % 1: animate soltion, otherwise: don't
 nSampled_fe = 1000; % number of samples from the full Forward Euler model
 nSampled_ode = 1000;% number of samples from the full ode45 model
 redOrder = 4;       % number of base vectors for reduced model
-nPlot = 100;        % number of time sample points to plot to keep plot file size small
+nPlot = 200;        % number of time sample points to plot to keep plot file size small
+lw = 1;
 mur = 1;            % relative permeability
 sigma = 35e6;       % [S/m] conductivity
 
@@ -174,31 +175,49 @@ if(animate==1)
 end
 
 %% comparing the two Forward Euler solutions
+ix = 1:round(size(t_all,2)/nPlot):size(t_all,2); % index vector for plotting
 figure(2)
 hold on
-plot(t_all, H_all(end,:), '--', 'linewidth', 1.5)
-plot(t_all, H_all(round(2/3*n),:), '--', 'linewidth', 1.5)
-plot(t_all, H_all(round(1/3*n),:), '--', 'linewidth', 1.5)
-plot(t_all, H_aa_fe(round(2/3*n),:), 'linewidth', 1.5)
-plot(t_all, H_aa_fe(round(1/3*n),:), 'linewidth', 1.5)
+plot(t_all(ix), H_all(end,ix), '--', 'linewidth', lw)
+plot(t_all(ix), H_all(round(0.7*n),ix), '--', 'linewidth', lw)
+plot(t_all(ix), H_all(round(0.3*n),ix), '--', 'linewidth', lw)
+plot(t_all(ix), H_aa_fe(round(0.7*n),ix), 'linewidth', lw)
+plot(t_all(ix), H_aa_fe(round(0.3*n),ix), 'linewidth', lw)
 axis([0 Tmax minH maxH])
-xlabel('t (s)')
-ylabel('H_{\phi} (A/m)');
-legend('r=a', 'r=(2/3)a', 'r=(1/3)a', 'r=(2/3)a (reduced)', 'r=(1/3)a (reduced)')
-title('Full and Reduced Order Forward Euler')
+xlabel('t [s]')
+ylabel('H_{\phi} [A/m]');
+xline((nSampled_fe-1)*dt,'linewidth',lw);
+legend('r=a', 'r=a \cdot 0.7', 'r=a \cdot 0.3', 'r=a \cdot 0.7 (redukált)', 'r=a \cdot 0.3 (redukált)', 'POD bemenet vége')
+title('Teljes (n='+string(n)+') és Redukált bázisú (n='+string(redOrder)+') Előrelépő Euler')
 hold off
 
 %% comparing the two ode45 solutions
+ix_ode = 1:round(size(t_ode,2)/nPlot):size(t_ode,2);
+ix_all_ode_red = 1:round(size(t_all_ode_red,2)/nPlot):size(t_all_ode_red,2);
 figure(3)
 hold on
-plot(t_all, H_all(end,:), '--', 'linewidth', 1.5)
-plot(t_ode, H_all_ode(round(2/3*n),:), '--', 'linewidth', 1.5)
-plot(t_ode, H_all_ode(round(1/3*n),:), '--', 'linewidth', 1.5)
-plot(t_all_ode_red, H_aa_ode(round(2/3*n),:), 'linewidth', 1.5)
-plot(t_all_ode_red, H_aa_ode(round(1/3*n),:), 'linewidth', 1.5)
+plot(t_all(ix), H_all(end,ix), '--', 'linewidth', lw)
+plot(t_ode(ix_ode), H_all_ode(round(0.7*n),ix_ode), '--', 'linewidth', lw)
+plot(t_ode(ix_ode), H_all_ode(round(0.3*n),ix_ode), '--', 'linewidth', lw)
+plot(t_all_ode_red(ix_all_ode_red), H_aa_ode(round(0.7*n),ix_all_ode_red), 'linewidth', lw)
+plot(t_all_ode_red(ix_all_ode_red), H_aa_ode(round(0.3*n),ix_all_ode_red), 'linewidth', lw)
 axis([0 Tmax minH maxH])
 xlabel('t (s)')
-ylabel('H_{\phi} (A/m)');
-legend('r=a', 'r=(2/3)a', 'r=(1/3)a', 'r=(2/3)a (reduced)', 'r=(1/3)a (reduced)')
-title('Full and Reduced Order ode45')
+ylabel('H_{\phi} [A/m]');
+xline(t_ode_sampled(end),'linewidth',lw);
+legend('r=a', 'r=a \cdot 0.7', 'r=a \cdot 0.3', 'r=a \cdot 0.7 (redukált)', 'r=a \cdot 0.3 (redukált)', 'POD bemenet vége')
+title('Teljes (n='+string(n)+') és Redukált bázisú (n='+string(redOrder)+') ode45')
 hold off
+
+
+%% Export images
+figure(2) % select Euler scheme figure
+ax=gca; % get currently selected figure
+exportgraphics(ax,'euler_'+string(nSampled_fe)+'_'+string(redOrder)+'.pdf','ContentType','vector'); % save
+
+figure(3) % select Euler scheme figure
+ax=gca; % get currently selected figure
+exportgraphics(ax,join('ode45_'+string(nSampled_ode)+'_'+string(redOrder)+'.pdf'),'ContentType','vector'); % save
+
+
+

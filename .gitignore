@@ -281,4 +281,5 @@ TSWLatexianTemp*
 output.txt
 .fuse_hidden*
 matlab/cylinder/*.pdf
+matlab/cylinder/*.eps
 *.asv

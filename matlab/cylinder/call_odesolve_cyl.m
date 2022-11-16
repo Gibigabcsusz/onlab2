@@ -213,11 +213,11 @@ hold off
 %% Export images
 figure(2) % select Euler scheme figure
 ax=gca; % get currently selected figure
-exportgraphics(ax,'euler_'+string(nSampled_fe)+'_'+string(redOrder)+'.pdf','ContentType','vector'); % save
+exportgraphics(ax,'euler_'+string(nSampled_fe)+'_'+string(redOrder)+'.eps','ContentType','vector'); % save
 
 figure(3) % select Euler scheme figure
 ax=gca; % get currently selected figure
-exportgraphics(ax,join('ode45_'+string(nSampled_ode)+'_'+string(redOrder)+'.pdf'),'ContentType','vector'); % save
+exportgraphics(ax,join('ode45_'+string(nSampled_ode)+'_'+string(redOrder)+'.eps'),'ContentType','vector'); % save
 
 
 

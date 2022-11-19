@@ -18,14 +18,14 @@ t_pulse = 5e-4;     % [s] pulse duration, worth to try:
 Tmax = 2*t_pulse;   % time window of simulation
 dt   = 2e-7;        % [s] time step
 animate = 0;        % 1: animate soltion, otherwise: don't
-save = 0;           % 1: save pictures, otherwise don't
+save = 1;           % 1: save pictures, otherwise don't
 % sampled time length relative to Tmax
-relative_t_sampled = 0.15;
+relative_t_sampled = 0.07;
 % number of samples from the full Forward Euler model
 t_sampled_end_fe = relative_t_sampled*Tmax;
 % number of samples from the full ode45 model
 t_sampled_end_ode = relative_t_sampled*Tmax;
-redOrder = 4;       % number of base vectors for reduced model
+redOrder = 8;       % number of base vectors for reduced model
 n_plot = 100;        % number of time sample points to plot to keep plot file size small
 lw = 1;
 mur = 1;            % relative permeability
@@ -314,15 +314,15 @@ if(save==1)
     
     figure(6) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_11_14'+'.eps',ContentType','vector'); % save
+    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_11_14'+'.eps','ContentType','vector'); % save
     
     figure(7) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_1_4'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_error'+'.eps','ContentType','vector'); % save
     
     figure(8) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_11_14'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_max_error'+'.eps','ContentType','vector'); % save
 end
 
 

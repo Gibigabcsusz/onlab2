@@ -15,13 +15,12 @@
 \usepackage[magyar]{babel}
 \usepackage{amsfonts}
 \usepackage{amsmath,bm}
-%\usepackage{amssymb}
+\usepackage{amssymb}
 \usepackage{graphicx}
 %\usepackage[hang]{caption}
 \usepackage{subcaption}
 %\usepackage{enumerate}
 %\usepackage{psfrag}
-%\usepackage{siunitx}
 \usepackage[left=20mm,right=20mm,top=20mm,bottom=25mm]{geometry}
 %\usepackage[left=10mm,right=10mm,top=10mm,bottom=15mm]{geometry} %landscape
 %\usepackage[hyphenbreaks]{breakurl}
@@ -29,7 +28,7 @@
 %\usepackage{multirow}
 %\usepackage{booktabs}
 \usepackage{hyperref}
-%\usepackage{listings}
+\usepackage{listings}
 %\usepackage{cite}
 %\usepackage{csquotes}
 \usepackage[range-phrase=--, range-units=single]{siunitx}
@@ -45,17 +44,20 @@
     urlcolor={blue!80!black}
 }
 
+\DeclareMathOperator{\rot}{rot}
+\DeclareMathOperator{\divergence}{div}
+
 \sloppy % Margón túllógó sorok tiltása.
 \widowpenalty=10000 \clubpenalty=10000 %A fattyú- és árvasorok elkerülése
 \def\hyph{-\penalty0\hskip0pt\relax} % Kötőjeles szavak elválasztásának engedélyezése
 
 \pagestyle{plain} 
 
-\listfiles % a package-ek kilistázása a logba
+%\listfiles % a package-ek kilistázása a logba
 
 \title{
     \centering
-    \includegraphics[width=0.6\textwidth]{kep/bme_logo.pdf} \\
+    \includegraphics[width=0.48\textwidth]{kep/bme_logo.pdf} \\
     \vspace{0.5cm}
     \large{\bf Budapesti Műszaki és Gazdaságtudományi Egyetem \\
     Villamosmérnöki és Informatikai Kar \\
@@ -67,8 +69,8 @@
     \vspace{2cm}
 }
 
-%\parskip=10pt
-%\parindent=0pt
+\parskip=10pt
+\parindent=0pt
 
 \newcommand\adj[1]{#1^{\mathrm{H}}}
 
@@ -79,7 +81,6 @@
 \begin{document}
     \maketitle
     \setcounter{page}{2}
-    \tableofcontents
     \section{Bevezetés}
             A POD, vagyis a Proper Orthogonal Decomposition, egy bázistranszformációs eljárás, ami egy adott adathalmaz reprezentálásához optimális bázist keres meg. Az eljárás által meghatározott $\Psi$ bázisban a bázisvektoroknak az a tulajdonsága, hogy a lehető legkevesebb bázisvektorral leírható az adathalmaz információtartalmának vagy energiájának lehető legnagyobb része. Ezt felhasználva a $\Psi$ csonkításával egy $\Psi'$ közelítő bázist lehet előállítani, ami lényegesen kisebb rendű, mint $\Psi$, mégis kis hibával reprezentálható benne az eredeti adathalmaz. Természetesen minél több bázisvektort hagyunk meg $\Psi'$-ben, annál jobban csökken a modell-redukcióból származó hiba, de a csonkítás mértékét az adott alkalmazáshoz mérten előírhatjuk. A POD egy másik előnyös tulajdonsága, hogy a gyakorlati esetek nagy részében a sorbarendezett $\psi_n$ bázisvektorokra eső energiatartalom rohamosan csökken, ezért sokszor nagyságrendekkel kisebb dimenziószámú bázissal is jól leírható az adathalmaz, mint az eredeti esetben.
         \subsection{A módszer eredete}
@@ -118,9 +119,9 @@
                 {\bf S}~=&~{\bf U \Sigma \adj{V}}
             \end{align}
         \subsection{A felbontás értelmezése}
-            Itt érdemes megállni és értelmezni a felbontásban szereplő mátrixokat és azok jelentését a modellezett rendszerrel kapcsolatban. \Aref{equ:svd}. egyenletben ${\bf U} \in \mathbb{C}^{n\times n}$ lesz a teljes $\Psi$ bázis vektorait (${\bf u}_i,~i \in \{1,~\hdots,~k\}$), mint oszlopvektorokat tartalmazó unitér mátrix. Az $\bf{U}$ mátrixnak csak az első $k$ db. oszlopa hordoz információt az $\bf{S}$ mintamátrixszal kapcsolatban, az utolsó $n-k$ db. oszlop csak ahhoz kell, hogy $\bf{U}$ unitér mátrix legyen.
+            Itt érdemes megállni és értelmezni a felbontásban szereplő mátrixokat és azok jelentését a modellezett rendszerrel kapcsolatban. \Aref{equ:svd}. egyenletben ${\bf U} \in \mathbb{C}^{n\times n}$ lesz a teljes $\Psi$ bázis vektorait (${\bf u}_i,~i \in \{1,~\hdots,~k\}$), mint oszlopvektorokat tartalmazó unitér mátrix. Az ${\bf U}$ mátrixnak csak az első $k$ db. oszlopa hordoz információt az ${\bf S}$ mintamátrixszal kapcsolatban, így csak ezek az oszlopok tartoznak a $\Psi$ bázisba. Az utolsó $n-k$ db. oszlop csak ahhoz kell, hogy ${\bf U}$ unitér mátrix legyen.
             \par
-            A ${\bf \Sigma} \in \mathbb{R}^{n\times k})$ egy diagonálmátrix, aminek az $i$-eik diagonáleleme, $\sigma_i$ az ${\bf u}_i$-hez tartozó együttható, ami azt fejezi ki, hogy az adott bázisvektor mennyire fontos, mennyire járul hozzá általában a rendszer állapotához, más szóval a rendszer energiájának vagy információtartalmának mekkora része írható le az adott bázisvektorral. Mivel $\bf{\Sigma}$ általános esetben nem négyzetes, de diagonális, ezért lesz egy olyan részmátrixa, ami csupa 0 értékekkel van feltöltve. Jelen esetben, vagyis ha a $n > k$, akkor az alsó $n-k$ db. sora csupa 0. $\in \mathbb{R}^{m\times m}~(m=min\{n,k\}=k)$ A ${\bf \Sigma}$ olyan felépítésű az SVD miatt, hogy a diagonálelemek csökkenő sorrendben szerepelnek az átlóban bal fentről jobbra lefelé haladva. A ${\bf U\Sigma} \in \mathbb{C}^{n\times k}$ szorzat tehát már az eredeti adatokhoz skálázott bázisvektorok mátrixának tekinthető, amelynek az oszlopaiban fontosság szerint csökkenő sorrendben szerepelnek benne. Ez a $\bf{U\Sigma}$ szorzat is olyan, hogy már csak $\bf{U}$ első $k$ db. oszlopa szerepel benne $\sigma_i$-vel skálázva.
+            A ${\bf \Sigma} \in \mathbb{R}^{n\times k}$ egy diagonálmátrix, aminek az $i$-eik diagonáleleme, $\sigma_i$ az ${\bf u}_i$-hez tartozó együttható, ami azt fejezi ki, hogy az adott bázisvektor mennyire fontos, mennyire járul hozzá általában a rendszer állapotához, más szóval a rendszer energiájának vagy információtartalmának mekkora része írható le az adott bázisvektorral. Mivel ${\bf \Sigma}$ általános esetben nem négyzetes, de diagonális, ezért lesz egy olyan részmátrixa, ami csupa 0 értékekkel van feltöltve. Jelen esetben, vagyis ha a $n > k$, akkor az alsó $n-k$ db. sora csupa 0. A ${\bf \Sigma}$ olyan felépítésű az SVD miatt, hogy a diagonálelemek csökkenő sorrendben szerepelnek az átlóban bal fentről jobbra lefelé haladva. A ${\bf U\Sigma} \in \mathbb{C}^{n\times k}$ szorzat tehát már az eredeti adatokhoz skálázott bázisvektorok mátrixának tekinthető, amelyek az oszlopaiban fontosság szerint csökkenő sorrendben szerepelnek. Ez a ${\bf U\Sigma}$ szorzat is olyan, hogy már csak ${\bf U}$ első $k$ db. oszlopa szerepel benne $\sigma_i$-vel skálázva.
             \par
             Tömören összefoglalva a ${\bf \adj{V}}$ mátrix a skálázott bázisvektorokhoz tartozó együtthatók mátrixa. A ${\bf \adj{V}}$ mátrix az $i$-edik ${\bf v}_i$ oszlopában tartalmazza az ${\bf x}_i$ mintavektor előállításához szükséges együtthatókat, amelyek a ${\bf U\Sigma}$ szorzat oszlopait súlyozzák:
             \begin{align}
@@ -139,33 +140,41 @@
             \end{align}
             Itt ${\bf S}$ a snapshot-mátrix, ${\bf U}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{V}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig az ${\bf x}_i$ mintavektorokból álló adathalmaz kovarianciamátrixa.
         \subsection{Az SVD takarékos változatai}
-            Az SVD algoritmusnak többféle változata ismert, amelyek mind műveletszám, mind memóriahasználat terén takarékosabbak a teljes SVD-nél. Ahogy már fent is említettem, a redukált bázis meghatározása szempontjából a ${\bf V}$ mátrix kiszámolása érdektelen. Ezen kívül, ha előre adott egy határ, hogy legalább mekkora szinguláris értékhez tartozó bázisvektorokat tartsunk meg, akkor ennél a határnál kisebb szinguláris értékekhez tartozó oszlopok $\bf{U}$-ban, illetve sorok $\adj{\bf{V}}$-ban érdektelenek. Ez a határ a szinguláris értékekre vonatkozóan lehet abszolút vagy relatív is, célszerűen a legnagyobb szinguláris értékhez képest. A számítógépek véges pontosságú számábrázolása miatt az is előfordulhat, hogy egy felbontani kívánt mátrix rangja lényegesen kisebb, mint a numerikus ábrázolási hibákkal terhelt megfelelőjéé. Más szóval a numerikus rangja eltér a valódi rangtól. Ez indokolttá teszi egy hibahatár bevezetését, aminél kisebb számokat már csak numerikus hibának tekintünk és emiatt pontosan 0-val helyettesítjük őket. Az SVD algoritmus többféle implementációja elérhető, némelyiknek pedig megadhatóak további paraméterek, amelyekkel például a fent vázolt, szinguláris értékekre vagy ábrázolási pontosságra vonatkozó határokat lehet megadni, továbbá egy fix redukált rangot is. Elvileg az is megadható, hogy az $\bf{U}$ és $\bf{\adj{V}}$ mátrixok közül melyikre van szükségünk, eszerint a nem szükségesnek megadott mátrix nem számolódik ki teljesen, ami egyes esetekben nagy csökkenéssel járhat erőforrásigény tekintetében \cite{Golub70}.
+            Az SVD algoritmusnak többféle változata ismert, amelyek mind műveletszám, mind memóriahasználat terén takarékosabbak a teljes SVD-nél. Ahogy már fent is említettem, a redukált bázis meghatározása szempontjából a ${\bf V}$ mátrix kiszámolása érdektelen. Ezen kívül, ha előre adott egy határ, hogy legalább mekkora szinguláris értékhez tartozó bázisvektorokat tartsunk meg, akkor ennél a határnál kisebb szinguláris értékekhez tartozó oszlopok ${\bf U}$-ban, illetve sorok $\adj{{\bf V}}$-ban érdektelenek. Ez a határ a szinguláris értékekre vonatkozóan lehet abszolút vagy relatív is, célszerűen a legnagyobb szinguláris értékhez képest. A számítógépek véges pontosságú számábrázolása miatt az is előfordulhat, hogy egy felbontani kívánt mátrix rangja lényegesen kisebb, mint a numerikus ábrázolási hibákkal terhelt megfelelőjéé. Más szóval a numerikus rangja eltér a valódi rangtól. Ez indokolttá teszi egy hibahatár bevezetését, aminél kisebb számokat már csak numerikus hibának tekintünk és emiatt pontosan 0-val helyettesítjük őket.
             \par
-            A takarékos SVD változatok \aref{fig:reduced_svd_broken}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél $\bf{\Sigma}$ ugyanolyan méretű, mint a felbontott $\bf{S}$ mátrix (\ref{fig:reduced_svd_broken_1}. ábra). A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_broken_1}. ábra). Ez csupán annyiban különbözik a teljes SVD-től, hogy a $\bf{U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem $\bf{\adj{V}}$-beli oszlop, valamint 
+            Az SVD algoritmusnak többféle implementációja elérhető, némelyiknek pedig megadhatóak további paraméterek, amelyekkel például a fent vázolt, szinguláris értékekre vagy ábrázolási pontosságra vonatkozó határokat lehet megadni, továbbá egy fix redukált rangot is. Elvileg az is megadható, hogy az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül melyikre van szükségünk, eszerint a nem szükségesnek megadott mátrix nem számolódik ki teljesen, ami egyes esetekben nagy csökkenéssel járhat erőforrásigény tekintetében \cite{Golub70}.
+            \par
+            A takarékos SVD változatok \aref{fig:reduced_svd_sajat}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél ${\bf \Sigma}$ ugyanolyan méretű, mint a felbontott ${\bf S}$ mátrix, ezzel a változattal írtam fel előzőleg a mintamátrix felbontását (\ref{fig:reduced_svd_sajat_1}. ábra).
+            \par
+            A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_sajat_1}. ábra). Ez a következőkben különbözik a teljes SVD-től. Éljünk a következő elnevezeéssel: $m=min(n,k)$. A ${\bf U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem ${\bf \adj{V}}$-beli oszlop, és hasonlóan ${\bf \adj{V}}$ soraival is, de az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül egyszerre csak az egyiknek a megcsonkítására van szükség $n$ és $k$ viszonyától függően. Ezen kívül a ${\bf \Sigma}$ mátrixnak is kihagyjuk a csupa 0 részét, amely az utolsó $n-m$ sora vagy az utolsó $k-m$ oszlopa, így egy $m \times m$ méretű diagonálmátrix lesz belőle, aminek minden diagonáleleme egy szinguláris érték. Ekkor a kompakt SVD-ben ${\bf U_k} \in \mathbb{C}^{n\times m}, {\bf\Sigma_k} \in \mathbb{C}^{m\times m}, {\bf \adj{V_k}} \in \mathbb{C}^{m\times k}$. A kompakt SVD a teljes változathoz képest nem jár információveszteséggel ${\bf S}$-re nézve. Az SVD-nek ez a változata használható MATLAB-ban, ha megadjuk az \verb|svd()| függvénynek a \verb|`econ`| opciót.
+            \par
+            A vékony SVD egy következő redukcióval jön létre a kompakt változatból. A kompakt SVD esetén még a szinguláris értékek között lehetnek 0 értékűek, amelyek a ${\bf \Sigma_v}$ főátlójának utolsó elemei. Tegyük fel, hogy $l$ db. nemnulla szinguláris érték van. A 0 szinguláris értékekhez tartozó ${\bf U_v}$-beli oszlopok és ${\bf \adj{V_v}}$-beli sorok szintén nem hordoznak hasznos információt, így ezektől is meg lehet szabadulni, valamint ${\bf \Sigma_v}$-ból is elég csak azt az $l\times l$-es bal felső részmátrixot megtartani, aminek a főátlójában a nemnulla szinguláris értékek vannak. Ekkor ${\bf U_v} \in \mathbb{C}^{n\times l}, {\bf \Sigma_v} \in \mathbb{C}^{l\times l}, {\bf \adj{V_v}} \in \mathbb{C}^{l\times k}$. Mivel itt már azt vizsgáljuk, hogy a szinguláris értékek 0 értékűek-e, felmerül az árbázolási hiba kérdése, ami miatt tévesen sokkal több szinguláris értéket is pozitívnak vélhet az algoritmus, mint amennyi valójában jelentős méretű. Erre a problémára nyújt megoldást az ábrázolási hibahatár megadása. Még ez a változat sem jár információvesztéssel, de az ábrázolási hibahatár használata miatt más numerikus pontatlanságból adódó zaj fogja terhelni a vékony SVD felbontásból visszaállított ${\bf S}$ mátrixot, mint az előző két esetben.
+            \par
+            Végül pedig a csonkított változat olyan, hogy csak a legnagyobb $r$ db. szinguláris érték, valamint az ezekhez tartozó ${\bf U}$-beli oszlopok és ${\bf \adj{V}}$-beli sorok számolódnak ki. Az $r$ szám egy előre megadott konstans. Ekkor ${\bf U_c} \in \mathbb{C}^{n\times r}, {\bf \Sigma_c} \in \mathbb{C}^{r\times r}, {\bf \adj{V_c}} \in \mathbb{C}^{r\times k}$. Ebben az esetben már az ${\bf S}$ mátrixnak csak egy kisebb rangú reprezentációja, ${\bf \tilde{S}}$ állítható elő a ${\bf U_c \times\Sigma_c\times\adj{V_c}}$ szorzatként.
             \begin{figure}[h]
                 \centering
-                \begin{subfigure}{0.38\textwidth}
-                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_1.pdf}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_sajat_1.pdf}
                     \caption{Teljes SVD.}
-                    \label{fig:reduced_svd_broken_1}
+                    \label{fig:reduced_svd_sajat_1}
                 \end{subfigure}
-                \begin{subfigure}{0.38\textwidth}
-                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_2.pdf}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_sajat_2.pdf}
                     \caption{Kompakt SVD.}
-                    \label{fig:reduced_svd_broken_2}
+                    \label{fig:reduced_svd_sajat_2}
                 \end{subfigure}
-                \begin{subfigure}{0.38\textwidth}
-                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_3.pdf}
-                    \caption{Keskeny SVD.}
-                    \label{fig:reduced_svd_broken_3}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_sajat_3.pdf}
+                    \caption{Vékony SVD.}
+                    \label{fig:reduced_svd_sajat_3}
                 \end{subfigure}
-                \begin{subfigure}{0.38\textwidth}
-                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_4.pdf}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_sajat_4.pdf}
                     \caption{Csonkított SVD.}
-                    \label{fig:reduced_svd_broken_4}
+                    \label{fig:reduced_svd_sajat_4}
                 \end{subfigure}
                 \caption{Az SVD különböző változatai \cite{WikipediaSVD}.}
-                \label{fig:reduced_svd_broken}
+                \label{fig:reduced_svd_sajat}
             \end{figure}
             %TODO wikipedia szerint thin, compact és truncated. Lehet, hogy föntebb is át kéne írni, hogy hogy érdemes kiszámolni
     \section{Példa szimuláció}
@@ -175,74 +184,108 @@
             \par
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/modell.pdf}
+                \includegraphics[width=0.48\textwidth]{kep/modell.pdf}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
-             A vezető rúd keresztmetszete a szaggatottal jelölt kör. A használt henger-koordinátarendszer bázisvektorai ${\bf e}_{z}, {\bf e}_{\phi}$ és ${\bf e}_{r}$. A vezető henger szimmetriatengelye $z$-irányú és szintén $z$-irányú benne a felületi áramsűrűség vektora is, ez az áramsűrűség a vezető hossza mentén nem változik. A modell általában $z$-irányú eltolásra és a szimmetriatengely körüli ($\varphi$ irányú) forgatásra invariáns, emiatt csak az egyes mennyiségek $r$ sugártól való függését kell vizsgálni, emiatt egydimenziós a modell.
+             A vezető rúd keresztmetszete a szaggatottal jelölt kör. A használt henger-koordinátarendszer bázisvektorai ${\bf e}_{z}, {\bf e}_{\varphi}$ és ${\bf e}_{r}$. A vezető henger szimmetriatengelye $z$-irányú és szintén $z$-irányú benne a felületi áramsűrűség vektora is, ez az áramsűrűség a vezető hossza mentén nem változik. A modell általában $z$-irányú eltolásra és a szimmetriatengely körüli ($\varphi$ irányú) forgatásra invariáns, emiatt csak az egyes mennyiségek $r$ sugártól való függését kell vizsgálni, emiatt egydimenziós a modell.
              \par
              A vezető keresztmetszetére elő van írva az összesített áram időfüggvénye, $I(t)$, de a skin-hatás miatt a vezető belsejében nem egyenletes az áramsűrűség, hanem a sugár mentén haladva változik. Ugyanígy a vezető belsejében létrejövő $H_\varphi$ és $E_z$ is függ a sugártól. Ezek a mennyiségek továbbá időfüggőek is, de a vezető henger önindukciója miatt nem pontosan a gerjesztéssel együtt változnak. Ezeknek a mennyiségeknek az időbeli alakulása a kérdés, ezeket határozza meg a szimuláció egy adott gerjesztés mellett.
             \par
             A modell például egy villámhárító földelő vezetőjében létrejövő elektromágneses tér alakulásának a vizsgálatára használható, amikor a villám meghatározza a villámhárítón folyó áramot.
         \subsection{A számítás menete}
-            A szimuláció
+            A félév során készített szimuláció a következőképpen épül fel.
+            \par
+            A rendszer 0 kezdeti állapotból indul, tehát kezdetben a hengerben nem folyik áram és emiatt 0 benne a mágneses és elektromos térerősség is. Az eredő $I(t)$ olyan formában van előírva, hogy a vezető felületére adott a mágneses térerősség időfüggvénye, vagyis $H_{\varphi}(r=a,t)$.
+            \par
+            Kétféle időlépéses módon készül megoldás a problémára, az egyik egy egyszerű előrelépő Euler sémát használ, a másik pedig a MATLAB beépített \verb|ode45()| függvényét, ami Runge-Kutta sémára épül és adaptív az időlépése. Mindkét megoldástípushoz szükség van arra, hogy a rendszer adott pillanatbeli állapotából, amit $H_{\varphi}(r,t)$ teljesen leír, ki lehessen számítani $H_{\varphi}$ idő szerinti parciális deriváltját. Ennek a parciális deriváltnak a segítségével aztán lehet előre léptetni az időlépéses sémákat, amiből egy $\Delta t$ idővel későbbi $H_{\varphi}(r,t+\Delta t)$ állapot adódik.
+            \begin{align}
+                \label{equ:fe}
+                H_{\varphi}(r,t+\Delta t) \approx & \dfrac{\partial H_{\varphi}(r,t)}{\partial t} \cdot \Delta t
+            \end{align}
+            Az előrelépő Euler séma időléptetése \aref{equ:fe}. egyenletben látható.
+            \par
+            A  Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható.
+            \begin{equation}\label{equ:maxwell}
+                \begin{aligned}
+                \rot \textbf{H}~&=~{\bf J} \\
+                \rot \textbf{E}~&=~-\dfrac{\partial \textbf{B}}{\partial t} \\
+                \divergence \textbf{B}~&=~0 \\
+                \divergence \textbf{E}~&=~0 \\
+                \textbf{B}~&=~\mu \textbf{H} \\
+                \textbf{J}~&=~\sigma\textbf{E} + \textbf{J}_i
+                \end{aligned}
+            \end{equation}
+            \par
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_td.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/ode45_0.15_4_td.eps}
+                \includegraphics[width=0.48\textwidth]{kep/ode45_0.15_4_td.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.07_4_td.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.07_4_td.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.07_8_td.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.07_8_td.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_2_td.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_2_td.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_base_1_4.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_base_1_4.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_base_11_14.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_base_11_14.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_rel_error.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_rel_error.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_rel_max_error.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_rel_max_error.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.5\textwidth]{kep/euler_0.15_4_sv.eps}
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_sv.eps}
+                \caption{A szimulált modell}
+                \label{fig:modell}
+            \end{figure}
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_ez_waterfall.eps}
+                \caption{A szimulált modell}
+                \label{fig:modell}
+            \end{figure}
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_hphi_waterfall.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}

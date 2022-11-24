@@ -20,12 +20,12 @@ dt   = 2e-7;        % [s] time step
 animate = 0;        % 1: animate soltion, otherwise: don't
 save = 1;           % 1: save pictures, otherwise don't
 % sampled time length relative to Tmax
-relative_t_sampled = 0.07;
+relative_t_sampled = 0.15;
 % number of samples from the full Forward Euler model
 t_sampled_end_fe = relative_t_sampled*Tmax;
 % number of samples from the full ode45 model
 t_sampled_end_ode = relative_t_sampled*Tmax;
-redOrder = 8;       % number of base vectors for reduced model
+redOrder = 4;       % number of base vectors for reduced model
 n_plot = 100;        % number of time sample points to plot to keep plot file size small
 lw = 1;
 mur = 1;            % relative permeability
@@ -294,6 +294,26 @@ colorbar;
 
 hold off
 
+%% plotting the solution's waterfall diagram
+figure(9)
+imagesc(H_all,"XData",t_plot,"YData",dr:dr:(a-dr))
+hold on
+colorbar;
+title('H_{\phi} vízesésdiagramja');
+xlabel('t [s]')
+ylabel('r [m]')
+hold off
+figure(10)
+
+imagesc(E_all,"XData",t_plot,"YData",dr:dr:(a-dr))
+hold on
+colorbar;
+title('E_{z} vízesésdiagramja');
+xlabel('t [s]')
+ylabel('r [m]')
+hold off
+
+
 %% Export images
 if(save==1)
     figure(2) % select Euler scheme figure
@@ -323,6 +343,14 @@ if(save==1)
     figure(8) % select vector importance figure
     ax=gca; % get currently selected figure
     exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_max_error'+'.eps','ContentType','vector'); % save
+    
+    figure(9) % select vector importance figure
+    ax=gca; % get currently selected figure
+    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_hphi_waterfall'+'.eps','ContentType','vector'); % save
+    
+    figure(10) % select vector importance figure
+    ax=gca; % get currently selected figure
+    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_ez_waterfall'+'.eps','ContentType','vector'); % save
 end
 
 

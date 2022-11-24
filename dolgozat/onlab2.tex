@@ -18,10 +18,10 @@
 %\usepackage{amssymb}
 \usepackage{graphicx}
 %\usepackage[hang]{caption}
-%\usepackage{subcaption}
+\usepackage{subcaption}
 %\usepackage{enumerate}
 %\usepackage{psfrag}
-\usepackage{siunitx}
+%\usepackage{siunitx}
 \usepackage[left=20mm,right=20mm,top=20mm,bottom=25mm]{geometry}
 %\usepackage[left=10mm,right=10mm,top=10mm,bottom=15mm]{geometry} %landscape
 %\usepackage[hyphenbreaks]{breakurl}
@@ -32,7 +32,7 @@
 %\usepackage{listings}
 %\usepackage{cite}
 %\usepackage{csquotes}
-%\usepackage[range-phrase=--, range-units=single]{siunitx}
+\usepackage[range-phrase=--, range-units=single]{siunitx}
 \usepackage{xcolor}
 \usepackage[a-3u]{pdfx}
 \hypersetup{
@@ -85,11 +85,11 @@
         \subsection{A módszer eredete}
             A módszer gyökerei az '40-es évekig nyúlnak vissza, amikor olyan tudományos problémákat próbáltak statisztikai módszerekkel megközelíteni, amelyeknek a megoldása valamilyen folytonos értékű függvény, sok esetben sztochasztikus folyamat. Egy jeles személy ebből a kezdeti időszakból Damodar Dharmananda Kosambi \cite{Kosambi11} indiai matematikus, aki a POD alapját képező (Kosambi--)Karhunen–Lo\`eve Expansion, vagyis Karhunen–Lo\`eve felbontás atyja. A Karhunen–Lo\`eve felbontás sztochasztikus folyamatok olyan reprezentálását teszi lehetővé, ahol a sztochasztikus folyamatot egy végtelen összeg alakjában írjuk fel. Ha ebből az összegből csak az első véges sok $n$ db. tényezőt hagyjuk meg (csonkítjuk a felbontást), akkor a kapott összegnek a lehető legkisebb a négyzetes hibája az eredeti sztochasztikus folyamathoz képest \cite{Aadithya18}.
             \par
-            A POD klasszikus formájában végtelen dimenziós vektorterek, azaz függvényterek fölött működik. Valójában numerikusan ennek egy véges dimenziós vektortereken értelmezett megfelelőjét, a szinguláris érték szerinti felbontást (SVD) lehet használni, a féléves munkám során én is ezt az eljárást használtam. A végtelen és véges dimenziós változatok között az átjárást a Galerkin-vetítés teremti meg \cite{Holmes2012}.
+            A POD klasszikus formájában végtelen dimenziós vektorterek, azaz függvényterek fölött működik. Valójában numerikusan ennek egy véges dimenziós vektortereken értelmezett megfelelőjét, a szinguláris érték szerinti felbontást (SVD) lehet használni, a féléves munkám során én is ezt az eljárást használtam. A végtelen és véges dimenziós változatok között az átjárást a Galerkin-vetítés teremti meg \cite{Holmes12}.
         \subsection{Felhasználási területekről általában}
             Az eljárást számos tudományterületen sikeresen alkalmazták már, különböző területeken különböző néven szokták emlegetni gyakorlatilag ugyanezt a módszert. Statisztikában főként Principal Component Analysis (PCA) néven fordul elő és nagy adathalmazok információtartalmának kinyerésére használják \cite{Jolliffe16}. Ahogy fent említettem, találkozhatunk még vele az irodalomban Karhunen–Lo\`eve Expansion néven is, elsősorban a sztochasztikus folyamatok kapcsán \cite{Aadithya18}. A turbulens áramlások kutatásával kapcsolatban legtöbbször POD-ként említik \cite{Sirovich}.
             \par
-            Lényeges felhasználási területek a fentieken kívül például: szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás; nemlineáris elektromágneses problémák (pl. motorok) szimulációja \cite{Henneron14}.
+            Lényeges felhasználási területek a fentieken kívül például: szabályozástechnikában a szuboptimális, de gyorsan számítható beavatkozás; nemlineáris elektromágneses problémák (pl. motorok) szimulációja \cite{Henneron14}; genetikában a DNS jellegzetes mintázatainak keresésében \cite{Chicco15}.
         \subsection{Problémakörök}
             A felsorolt problémák, amelyeknél segítséget nyújthat a POD, különböző kategóriákba sorolhatóak.
             \par
@@ -103,6 +103,7 @@
             A fent vázolt, tranziens szimulációban történő alkalmazáson kívül más módokon is hasznosítható lehet a POD a térszámítási problémákban, de a dolgozatomban elsősorban ezzel a megközelítéssel foglalkozom. Az alkalmazási lehetőségeket az korlátozza elsősorban, hogy a megoldásnak újrafelhasználhatónak kell lennie egy szimuláció vagy részszimuláció után egy másik futás során. Például egy végeselem szimulációnál ha a térbeli struktúrát megváltoztatjuk, akkor ez majdnem szükségszerűen azzal jár, hogy megváltozik a végeselem-háló, ami miatt már nem igazán lehet újrafelhasználni a korábbi hálóra kapott megoldást. A végeselem szimulációknál a háló mozgásának, változásának lekezelése a Moving Mesh problémakörébe tartozik, a dolgozatomban ezzel nem foglalkozom.
             %TODO
     \section{A POD-ról részletesebben}
+    \label{sec:POD}
         A bevezetésben említettem, hogy az adathalmaz energiájának vagy információtartalmának szempontjából optimális a $\Psi$ bázis, de ez pontosításra szorul.
         %TODO pontosítás
         \cite{Jolliffe16}
@@ -116,14 +117,18 @@
                 \label{equ:svd}
                 {\bf S}~=&~{\bf U \Sigma \adj{V}}
             \end{align}
-        \subsection{Az egyenletek értelmezése}
-            Itt érdemes megállni és értelmezni a felbontásban szereplő mátrixokat és azok jelentését a modellezett rendszerrel kapcsolatban. \Aref{equ:svd}. egyenletben ${\bf U} \in \mathbb{C}^{n\times k}$ lesz a teljes $\Psi$ bázis vektorait (${\bf u}_i,~i \in \{1,~\hdots,~k\}$), mint oszlopvektorokat tartalmazó unitér mátrix, tehát az oszlopai egységvektorok. A ${\bf \Sigma} \in \mathbb{R}^{m\times m}~(m=min\{n,k\}=k)$ egy pozitív definit diagonálmátrix, aminek az $i$-eik diagonálelemei, $\sigma_i$ az ${\bf u}_i$-hez tartozó együttható, ami azt fejezi ki, hogy az adott bázisvektor mennyire fontos, mennyire járul hozzá általában a rendszer állapotához, más szóval a rendszer energiájának vagy információtartalmának mekkora része írható le az adott bázisvektorral. A ${\bf \Sigma}$ olyan felépítésű az SVD miatt, hogy a diagonálelemek csökkenő sorrendben szerepelnek az átlóban bal fentről jobbra lefelé haladva. A ${\bf U\Sigma} \in \mathbb{C}^{n\times m}$ szorzat tehát már az eredeti adatokhoz skálázott bázisvektorok mátrixának tekinthető, amelyben fontosság szerint csökkenő sorrendben szerepelnek egymás után a bázisvektorok. Tömören összefoglalva a ${\bf \adj{V}}$ mátrix a skálázott bázisvektorokhoz tartozó együtthatók mátrixa. A ${\bf \adj{V}}$ mátrix az $i$-edik ${\bf v}_i$ oszlopában tartalmazza az ${\bf x}_i$ mintavektor előállításához szükséges együtthatókat, amelyek a ${\bf U\Sigma}$ szorzat oszlopait súlyozzák:
+        \subsection{A felbontás értelmezése}
+            Itt érdemes megállni és értelmezni a felbontásban szereplő mátrixokat és azok jelentését a modellezett rendszerrel kapcsolatban. \Aref{equ:svd}. egyenletben ${\bf U} \in \mathbb{C}^{n\times n}$ lesz a teljes $\Psi$ bázis vektorait (${\bf u}_i,~i \in \{1,~\hdots,~k\}$), mint oszlopvektorokat tartalmazó unitér mátrix. Az $\bf{U}$ mátrixnak csak az első $k$ db. oszlopa hordoz információt az $\bf{S}$ mintamátrixszal kapcsolatban, az utolsó $n-k$ db. oszlop csak ahhoz kell, hogy $\bf{U}$ unitér mátrix legyen.
+            \par
+            A ${\bf \Sigma} \in \mathbb{R}^{n\times k})$ egy diagonálmátrix, aminek az $i$-eik diagonáleleme, $\sigma_i$ az ${\bf u}_i$-hez tartozó együttható, ami azt fejezi ki, hogy az adott bázisvektor mennyire fontos, mennyire járul hozzá általában a rendszer állapotához, más szóval a rendszer energiájának vagy információtartalmának mekkora része írható le az adott bázisvektorral. Mivel $\bf{\Sigma}$ általános esetben nem négyzetes, de diagonális, ezért lesz egy olyan részmátrixa, ami csupa 0 értékekkel van feltöltve. Jelen esetben, vagyis ha a $n > k$, akkor az alsó $n-k$ db. sora csupa 0. $\in \mathbb{R}^{m\times m}~(m=min\{n,k\}=k)$ A ${\bf \Sigma}$ olyan felépítésű az SVD miatt, hogy a diagonálelemek csökkenő sorrendben szerepelnek az átlóban bal fentről jobbra lefelé haladva. A ${\bf U\Sigma} \in \mathbb{C}^{n\times k}$ szorzat tehát már az eredeti adatokhoz skálázott bázisvektorok mátrixának tekinthető, amelynek az oszlopaiban fontosság szerint csökkenő sorrendben szerepelnek benne. Ez a $\bf{U\Sigma}$ szorzat is olyan, hogy már csak $\bf{U}$ első $k$ db. oszlopa szerepel benne $\sigma_i$-vel skálázva.
+            \par
+            Tömören összefoglalva a ${\bf \adj{V}}$ mátrix a skálázott bázisvektorokhoz tartozó együtthatók mátrixa. A ${\bf \adj{V}}$ mátrix az $i$-edik ${\bf v}_i$ oszlopában tartalmazza az ${\bf x}_i$ mintavektor előállításához szükséges együtthatókat, amelyek a ${\bf U\Sigma}$ szorzat oszlopait súlyozzák:
             \begin{align}
                 {\bf x}_i~=&~{\bf U\Sigma v}_i
             \end{align}
             Más szemszögből megközelítve a ${\bf \adj{V}}$ értelmezését, $v_{j,i}$, tehát ${\bf \adj{V}}$ $j$-edik sorának $i$-edik eleme (${\bf v}_i$ $j$-edik eleme) jelenti ${\bf u}_j \sigma_j$ hozzájárulását vagy súlyát ${\bf x}_i$-hez.
             \par
-            Az ellenkező esetben, amikor $k$ nagy és emiatt $m=min\{n,k\}=n$, már számításigény szempontjából nem optimális ${\bf S}$ teljes SVD-jének direkt kiszámolása, mert ez az immár $k \times k$ méretű ${\bf \adj{V}}$ mátrix kiszámolásával jár, ami a redukált modell létrehozása szempontjából lényegtelen. Ebben az esetben érdemesebb kiszámítani az adathalmaz kovarianciamátrixát, a ${\bf C} \in \mathbb{C}^{n \times n}$ mátrixot. Azért jutunk ezzel előrébb, mert \aref{equ:kovariancia}. egyenletben látható módon az ${\bf U}$ mátrixot megkaphatjuk a ${\bf C}$ spektrálfelbontásából is. Ezzel a módosított eljárással Method of Snapshots néven találkozhatunk az irodalomban \cite{Chatterjee2000}. Mivel ${\bf C}$ szimmetrikus, ezért pozitív definit, emiatt mindig létezik spektrálfelbontása.
+            Az ellenkező esetben, amikor $k\gg n$, már számításigény szempontjából nem optimális ${\bf S}$ teljes SVD-jének direkt kiszámolása, mert ez az immár $k \times k$ méretű ${\bf \adj{V}}$ mátrix kiszámolásával jár, ami a redukált modell létrehozása szempontjából lényegtelen. Ebben az esetben érdemesebb lenne kiszámítani az adathalmaz kovarianciamátrixát, a ${\bf C} \in \mathbb{C}^{n \times n}$ mátrixot. Azért jutunk ezzel előrébb, mert \aref{equ:kovariancia}. egyenletben látható módon az ${\bf U}$ mátrixot megkaphatjuk a ${\bf C}$ spektrálfelbontásából is. Ezzel a módosított eljárással Method of Snapshots néven találkozhatunk az irodalomban \cite{Chatterjee00}. Mivel ${\bf C}$ szimmetrikus, ezért pozitív definit, emiatt mindig létezik spektrálfelbontása.
             \begin{align}
             \begin{split}
                 \label{equ:kovariancia}
@@ -134,7 +139,34 @@
             \end{align}
             Itt ${\bf S}$ a snapshot-mátrix, ${\bf U}$ oszlopai az új bázisvektorok, ${\bf \Sigma}$ tartalmazza a bázisvektorok információtartalmát jellemző szinguláris értékeket a főátlójában, ${\bf \adj{V}}$ sorai az egyes bázisvektorok időfüggő együtthatói, ${\bf C}$ pedig az ${\bf x}_i$ mintavektorokból álló adathalmaz kovarianciamátrixa.
         \subsection{Az SVD takarékos változatai}
-            Az SVD algoritmusnak többféle változata ismert, amelyek mind műveletszám, mind memóriahasználat terén takarékosabbak a teljes SVD-nél. Ahogy már fent is említettem, a redukált bázis meghatározása szempontjából a ${\bf V}$ mátrix kiszámolása érdektelen.
+            Az SVD algoritmusnak többféle változata ismert, amelyek mind műveletszám, mind memóriahasználat terén takarékosabbak a teljes SVD-nél. Ahogy már fent is említettem, a redukált bázis meghatározása szempontjából a ${\bf V}$ mátrix kiszámolása érdektelen. Ezen kívül, ha előre adott egy határ, hogy legalább mekkora szinguláris értékhez tartozó bázisvektorokat tartsunk meg, akkor ennél a határnál kisebb szinguláris értékekhez tartozó oszlopok $\bf{U}$-ban, illetve sorok $\adj{\bf{V}}$-ban érdektelenek. Ez a határ a szinguláris értékekre vonatkozóan lehet abszolút vagy relatív is, célszerűen a legnagyobb szinguláris értékhez képest. A számítógépek véges pontosságú számábrázolása miatt az is előfordulhat, hogy egy felbontani kívánt mátrix rangja lényegesen kisebb, mint a numerikus ábrázolási hibákkal terhelt megfelelőjéé. Más szóval a numerikus rangja eltér a valódi rangtól. Ez indokolttá teszi egy hibahatár bevezetését, aminél kisebb számokat már csak numerikus hibának tekintünk és emiatt pontosan 0-val helyettesítjük őket. Az SVD algoritmus többféle implementációja elérhető, némelyiknek pedig megadhatóak további paraméterek, amelyekkel például a fent vázolt, szinguláris értékekre vagy ábrázolási pontosságra vonatkozó határokat lehet megadni, továbbá egy fix redukált rangot is. Elvileg az is megadható, hogy az $\bf{U}$ és $\bf{\adj{V}}$ mátrixok közül melyikre van szükségünk, eszerint a nem szükségesnek megadott mátrix nem számolódik ki teljesen, ami egyes esetekben nagy csökkenéssel járhat erőforrásigény tekintetében \cite{Golub70}.
+            \par
+            A takarékos SVD változatok \aref{fig:reduced_svd_broken}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél $\bf{\Sigma}$ ugyanolyan méretű, mint a felbontott $\bf{S}$ mátrix (\ref{fig:reduced_svd_broken_1}. ábra). A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_broken_1}. ábra). Ez csupán annyiban különbözik a teljes SVD-től, hogy a $\bf{U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem $\bf{\adj{V}}$-beli oszlop, valamint 
+            \begin{figure}[h]
+                \centering
+                \begin{subfigure}{0.38\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_1.pdf}
+                    \caption{Teljes SVD.}
+                    \label{fig:reduced_svd_broken_1}
+                \end{subfigure}
+                \begin{subfigure}{0.38\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_2.pdf}
+                    \caption{Kompakt SVD.}
+                    \label{fig:reduced_svd_broken_2}
+                \end{subfigure}
+                \begin{subfigure}{0.38\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_3.pdf}
+                    \caption{Keskeny SVD.}
+                    \label{fig:reduced_svd_broken_3}
+                \end{subfigure}
+                \begin{subfigure}{0.38\textwidth}
+                    \includegraphics[width=\textwidth]{kep/reduced_svd_broken_4.pdf}
+                    \caption{Csonkított SVD.}
+                    \label{fig:reduced_svd_broken_4}
+                \end{subfigure}
+                \caption{Az SVD különböző változatai \cite{WikipediaSVD}.}
+                \label{fig:reduced_svd_broken}
+            \end{figure}
             %TODO wikipedia szerint thin, compact és truncated. Lehet, hogy föntebb is át kéne írni, hogy hogy érdemes kiszámolni
     \section{Példa szimuláció}
         A POD működésének demonstrálására a konzulensem, Dr. Bilicz Sándor segítségével írtam egy MATLAB szkriptet. A szkript egy egydimenziós véges differencia közelítést használó modell tranziens viselkedését szimulálja, pontosabban az elektromos és mágneses tér alakulását. A megoldást többféleképpen számítja ki, teljes és redukált bázisú változatban is, hogy ezek összehasonlíthatóak legyenek.

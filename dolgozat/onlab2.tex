@@ -210,7 +210,7 @@
             \end{align}
             A megoldás csak akkor konvergens, vagyis használható, ha $F<0.5$.
             \par
-            A Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható (magneto-kvázistacionárius közelítés).
+            A Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható. Magneto-kvázistacionárius közelítést használok, valamint a $\sigma$ és $\mu$ anyagjellemzők egy-egy skalárral leírhatóak.
             \begin{equation}\label{equ:maxwell}
                 \begin{aligned}
                 \rot \textbf{H}~&=~{\bf J} \\
@@ -220,9 +220,19 @@
                 \textbf{B}~&=~\mu \textbf{H} \\
                 \textbf{J}~&=~\sigma\textbf{E} + \textbf{J}_i
                 \end{aligned}
-            \end{equation}
-            Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott.
+            \end{equation}% TODO maxwell-egyenletek nevei
+            A $\textbf{J}_i$ áramsűrűség csak $z$ irányú, emiatt az \huge első maxwellegyenlet neve\normalsize miatt a rá merőleges $\textbf{H}$ mágneses térerősségnek csak $\varphi$-irányú komponense lesz. A $\textbf{H}$ változása pedig \huge a második maxwell-egyenlet\normalsize miatt szintén csak $z$ irányú, $\sigma\textbf{E}$ vezetési áramot hozhat létre, tehát az eredő $\textb{J}$ áramnak mindig csak $z$-irányú komponense lesz, a $\textbf{H}$ térerősségnek pedig csak $\varphi$-irányú komponense, így elég csupán ezekkel a komponensekkel foglalkozni, amelyeket mint skalármennyiségekként lehet meghatározni.
             \par
+            \Aref{equ:maxwell}. egyenlet kifejezéseit átrendezve a következőhöz juthatunk:
+            \begin{equation}\label{equ:dhdt}
+                \begin{aligned}
+                    \dfrac{\partial \textbf{H}}{\partial t} &= -\dfrac{1}{\sigma\mu}\rot\rot\textbf{H}\\%TODO véges differenciás képlet ehhez
+                \end{aligned}
+            \end{equation}
+            \par
+            Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott. Ezen kívül a forgási szimmetria miatt az $r=0$ pontban is ismerten $\textbf{H}_{varphi}=0$ a gerjesztéstől függetlenül. Ha $n$ db. diszkretizáló ponttal dolgozunk, akkor tehát két pontra már adott a megoldás $\textbf{H}_{\varphi}$-re vonatkozóan, így $n-2$ pontra kell azt kiszámítani. \Aref{equ:dhdt} kifejezés szerint véges differencia közelítéssel kiszámítható egy adott időlépésbeli mágneses térerősség eloszlásából annak az idő szerinti deriváltja, ami felhasználható az időléptetéshez mindkétféle időlépéses sémában. Így az időléptetéshez nincs szükség az $\textbf{E}$ vagy $\textbf{J}$ terek kiszámolására, ezek meghatározása csak egy utófeldolgozási lépést jelent.
+            \par
+        \subsection{Redukált báziú megoldás}
             \begin{figure}[h]
                 \centering
                 \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}

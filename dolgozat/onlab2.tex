@@ -251,7 +251,18 @@
                         \textbf{H}_{\varphi}(k\cdot\Delta t) \end{bmatrix}
                 \end{aligned}
             \end{equation}
-            Megjegyzem
+            \par
+            Megjegyzem, hogy valószínűleg nem mindig célszerű a mintavételezett időtartam összes időlépését felhasználni $\textbf{S}$ megkonstruálásához. Ha jól meg tudjuk választani a mintákat, akkor valószínűleg elég a redukált bázis számosságánál csak legfeljebb \qtyrange{1}{2}{} nagyságrenddel nagyobb számú minta a rendszerből, attól függetlenül, hogy hány mintát tartalmazó időintervallumot mintavételezünk. Ennek a csökkentett mintavételezésnek a hatását a félév során már nem volt időm megvizsgálni.
+            \par
+            A $\Psi$ bázist a MATLAB \verb|svd()| függvényével állítom elő. Ez a függvény mint egy melléktermékként az $\textbf{S}$ mátrix teljes SVD felbontását kiszámítja, így a szinguláris értékek mátrixát, $\Sigma$-t is. A szinguláris értékek egy futtatásból \aref{fig:sigma}. ábrán láthatóak.
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_sv.eps}
+                \caption{A szimulált modell}
+                \label{fig:sigma}
+            \end{figure}
+            \par
+            asd
             \begin{figure}[h]
                 \centering
                 \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}
@@ -303,12 +314,6 @@
             \begin{figure}[h]
                 \centering
                 \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_rel_max_error.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_sv.eps}
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}

@@ -318,39 +318,37 @@ hold off
 if(save==1)
     figure(2) % select Euler scheme figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_td'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_td'+'.eps','ContentType','vector'); % save
     
     figure(3) % select Euler scheme figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'ode45_'+string(relative_t_sampled)+'_'+string(redOrder)+'_td'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/ode45_'+string(relative_t_sampled)+'_'+string(redOrder)+'_td'+'.eps','ContentType','vector'); % save
     
     figure(4) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_sv'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_sv'+'.eps','ContentType','vector'); % save
     
     figure(5) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_1_4'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_1_4'+'.eps','ContentType','vector'); % save
     
     figure(6) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_11_14'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_11_14'+'.eps','ContentType','vector'); % save
     
     figure(7) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_error'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_error'+'.eps','ContentType','vector'); % save
     
     figure(8) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_max_error'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_max_error'+'.eps','ContentType','vector'); % save
     
     figure(9) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_hphi_waterfall'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_hphi_waterfall'+'.eps','ContentType','vector'); % save
     
     figure(10) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_ez_waterfall'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_ez_waterfall'+'.eps','ContentType','vector'); % save
 end
-
-

@@ -9,6 +9,7 @@
 \end{filecontents*}
 
 \documentclass[a4paper,12pt,titlepage]{article}
+%\documentclass[a4paper,12pt,titlepage,draft]{article}
 \usepackage{ucs}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -70,8 +71,8 @@
     \vspace{2cm}
 }
 
-\parskip=10pt
-\parindent=0pt
+%\parskip=10pt
+%\parindent=0pt
 
 \newcommand\adj[1]{#1^{\mathrm{H}}}
 
@@ -145,14 +146,7 @@
             \par
             Az SVD algoritmusnak többféle implementációja elérhető, némelyiknek pedig megadhatóak további paraméterek, amelyekkel például a fent vázolt, szinguláris értékekre vagy ábrázolási pontosságra vonatkozó határokat lehet megadni, továbbá egy fix redukált rangot is. Elvileg az is megadható, hogy az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül melyikre van szükségünk, eszerint a nem szükségesnek megadott mátrix nem számolódik ki teljesen, ami egyes esetekben nagy csökkenéssel járhat erőforrásigény tekintetében \cite{Golub70}.
             \par
-            A takarékos SVD változatok \aref{fig:reduced_svd_sajat}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél ${\bf \Sigma}$ ugyanolyan méretű, mint a felbontott ${\bf S}$ mátrix, ezzel a változattal írtam fel előzőleg a mintamátrix felbontását (\ref{fig:reduced_svd_sajat_1}. ábra).
-            \par
-            A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_sajat_1}. ábra). Ez a következőkben különbözik a teljes SVD-től. Éljünk a következő elnevezeéssel: $m=min(n,k)$. A ${\bf U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem ${\bf \adj{V}}$-beli oszlop, és hasonlóan ${\bf \adj{V}}$ soraival is, de az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül egyszerre csak az egyiknek a megcsonkítására van szükség $n$ és $k$ viszonyától függően. Ezen kívül a ${\bf \Sigma}$ mátrixnak is kihagyjuk a csupa 0 részét, amely az utolsó $n-m$ sora vagy az utolsó $k-m$ oszlopa, így egy $m \times m$ méretű diagonálmátrix lesz belőle, aminek minden diagonáleleme egy szinguláris érték. Ekkor a kompakt SVD-ben ${\bf U_k} \in \mathbb{C}^{n\times m}, {\bf\Sigma_k} \in \mathbb{C}^{m\times m}, {\bf \adj{V_k}} \in \mathbb{C}^{m\times k}$. A kompakt SVD a teljes változathoz képest nem jár információveszteséggel ${\bf S}$-re nézve. Az SVD-nek ez a változata használható MATLAB-ban, ha megadjuk az \verb|svd()| függvénynek a \verb|`econ`| opciót.
-            \par
-            A vékony SVD egy következő redukcióval jön létre a kompakt változatból. A kompakt SVD esetén még a szinguláris értékek között lehetnek 0 értékűek, amelyek a ${\bf \Sigma_v}$ főátlójának utolsó elemei. Tegyük fel, hogy $l$ db. nemnulla szinguláris érték van. A 0 szinguláris értékekhez tartozó ${\bf U_v}$-beli oszlopok és ${\bf \adj{V_v}}$-beli sorok szintén nem hordoznak hasznos információt, így ezektől is meg lehet szabadulni, valamint ${\bf \Sigma_v}$-ból is elég csak azt az $l\times l$-es bal felső részmátrixot megtartani, aminek a főátlójában a nemnulla szinguláris értékek vannak. Ekkor ${\bf U_v} \in \mathbb{C}^{n\times l}, {\bf \Sigma_v} \in \mathbb{C}^{l\times l}, {\bf \adj{V_v}} \in \mathbb{C}^{l\times k}$. Mivel itt már azt vizsgáljuk, hogy a szinguláris értékek 0 értékűek-e, felmerül az árbázolási hiba kérdése, ami miatt tévesen sokkal több szinguláris értéket is pozitívnak vélhet az algoritmus, mint amennyi valójában jelentős méretű. Erre a problémára nyújt megoldást az ábrázolási hibahatár megadása. Még ez a változat sem jár információvesztéssel, de az ábrázolási hibahatár használata miatt más numerikus pontatlanságból adódó zaj fogja terhelni a vékony SVD felbontásból visszaállított ${\bf S}$ mátrixot, mint az előző két esetben.
-            \par
-            Végül pedig a csonkított változat olyan, hogy csak a legnagyobb $r$ db. szinguláris érték, valamint az ezekhez tartozó ${\bf U}$-beli oszlopok és ${\bf \adj{V}}$-beli sorok számolódnak ki. Az $r$ szám egy előre megadott konstans. Ekkor ${\bf U_c} \in \mathbb{C}^{n\times r}, {\bf \Sigma_c} \in \mathbb{C}^{r\times r}, {\bf \adj{V_c}} \in \mathbb{C}^{r\times k}$. Ebben az esetben már az ${\bf S}$ mátrixnak csak egy kisebb rangú reprezentációja, ${\bf \tilde{S}}$ állítható elő a ${\bf U_c \times\Sigma_c\times\adj{V_c}}$ szorzatként.
-            \begin{figure}[h]
+            \begin{figure}[h!]
                 \centering
                 \begin{subfigure}{0.48\textwidth}
                     \includegraphics[width=\textwidth]{kep/reduced_svd_sajat_1.pdf}
@@ -178,6 +172,13 @@
                 \label{fig:reduced_svd_sajat}
             \end{figure}
             %TODO wikipedia szerint thin, compact és truncated. Lehet, hogy föntebb is át kéne írni, hogy hogy érdemes kiszámolni
+            A takarékos SVD változatok \aref{fig:reduced_svd_sajat}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél ${\bf \Sigma}$ ugyanolyan méretű, mint a felbontott ${\bf S}$ mátrix, ezzel a változattal írtam fel előzőleg a mintamátrix felbontását (\ref{fig:reduced_svd_sajat_1}. ábra).
+            \par
+            A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_sajat_1}. ábra). Ez a következőkben különbözik a teljes SVD-től. Éljünk a következő elnevezeéssel: $m=min(n,k)$. A ${\bf U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem ${\bf \adj{V}}$-beli oszlop, és hasonlóan ${\bf \adj{V}}$ soraival is, de az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül egyszerre csak az egyiknek a megcsonkítására van szükség $n$ és $k$ viszonyától függően. Ezen kívül a ${\bf \Sigma}$ mátrixnak is kihagyjuk a csupa 0 részét, amely az utolsó $n-m$ sora vagy az utolsó $k-m$ oszlopa, így egy $m \times m$ méretű diagonálmátrix lesz belőle, aminek minden diagonáleleme egy szinguláris érték. Ekkor a kompakt SVD-ben ${\bf U_k} \in \mathbb{C}^{n\times m}, {\bf\Sigma_k} \in \mathbb{C}^{m\times m}, {\bf \adj{V_k}} \in \mathbb{C}^{m\times k}$. A kompakt SVD a teljes változathoz képest nem jár információveszteséggel ${\bf S}$-re nézve. Az SVD-nek ez a változata használható MATLAB-ban, ha megadjuk az \verb|svd()| függvénynek a \verb|`econ`| opciót.
+            \par
+            A vékony SVD egy következő redukcióval jön létre a kompakt változatból. A kompakt SVD esetén még a szinguláris értékek között lehetnek 0 értékűek, amelyek a ${\bf \Sigma_v}$ főátlójának utolsó elemei. Tegyük fel, hogy $l$ db. nemnulla szinguláris érték van. A 0 szinguláris értékekhez tartozó ${\bf U_v}$-beli oszlopok és ${\bf \adj{V_v}}$-beli sorok szintén nem hordoznak hasznos információt, így ezektől is meg lehet szabadulni, valamint ${\bf \Sigma_v}$-ból is elég csak azt az $l\times l$-es bal felső részmátrixot megtartani, aminek a főátlójában a nemnulla szinguláris értékek vannak. Ekkor ${\bf U_v} \in \mathbb{C}^{n\times l}, {\bf \Sigma_v} \in \mathbb{C}^{l\times l}, {\bf \adj{V_v}} \in \mathbb{C}^{l\times k}$. Mivel itt már azt vizsgáljuk, hogy a szinguláris értékek 0 értékűek-e, felmerül az árbázolási hiba kérdése, ami miatt tévesen sokkal több szinguláris értéket is pozitívnak vélhet az algoritmus, mint amennyi valójában jelentős méretű. Erre a problémára nyújt megoldást az ábrázolási hibahatár megadása. Még ez a változat sem jár információvesztéssel, de az ábrázolási hibahatár használata miatt más numerikus pontatlanságból adódó zaj fogja terhelni a vékony SVD felbontásból visszaállított ${\bf S}$ mátrixot, mint az előző két esetben.
+            \par
+            Végül pedig a csonkított változat olyan, hogy csak a legnagyobb $r$ db. szinguláris érték, valamint az ezekhez tartozó ${\bf U}$-beli oszlopok és ${\bf \adj{V}}$-beli sorok számolódnak ki. Az $r$ szám egy előre megadott konstans. Ekkor ${\bf U_c} \in \mathbb{C}^{n\times r}, {\bf \Sigma_c} \in \mathbb{C}^{r\times r}, {\bf \adj{V_c}} \in \mathbb{C}^{r\times k}$. Ebben az esetben már az ${\bf S}$ mátrixnak csak egy kisebb rangú reprezentációja, ${\bf \tilde{S}}$ állítható elő a ${\bf U_c \times\Sigma_c\times\adj{V_c}}$ szorzatként.
     \section{Példa szimuláció}
         A POD működésének demonstrálására a konzulensem, Dr. Bilicz Sándor segítségével írtam egy MATLAB szkriptet. A szkript egy egydimenziós véges differencia közelítést használó modell tranziens viselkedését szimulálja, pontosabban az elektromos és mágneses tér alakulását. A megoldást többféleképpen számítja ki, teljes és redukált bázisú változatban is, hogy ezek összehasonlíthatóak legyenek.
         \subsection{A modell}
@@ -194,7 +195,7 @@
              A vezető keresztmetszetére elő van írva az összesített áram időfüggvénye, $I(t)$, de a skin-hatás miatt a vezető belsejében nem egyenletes az áramsűrűség, hanem a sugár mentén haladva változik. Ugyanígy a vezető belsejében létrejövő $H_\varphi$ és $E_z$ is függ a sugártól. Ezek a mennyiségek továbbá időfüggőek is, de a vezető henger önindukciója miatt nem pontosan a gerjesztéssel együtt változnak. Ezeknek a mennyiségeknek az időbeli alakulása a kérdés, ezeket határozza meg a szimuláció egy adott gerjesztés mellett.
             \par
             A modell például egy villámhárító földelő vezetőjében létrejövő elektromágneses tér alakulásának a vizsgálatára használható, amikor a villám meghatározza a villámhárítón folyó áramot.
-        \subsection{A számítás menete}
+        \subsection{Teljes rendű megoldás}
             A félév során készített szimuláció a következőképpen épül fel.
             \par
             A rendszer 0 kezdeti állapotból indul, tehát kezdetben a hengerben nem folyik áram és emiatt 0 benne a mágneses és elektromos térerősség is. Az eredő $I(t)$ olyan formában van előírva, hogy a vezető felületére adott a mágneses térerősség időfüggvénye, vagyis $H_{\varphi}(r=a,t)$.
@@ -210,7 +211,7 @@
             \end{align}
             A megoldás csak akkor konvergens, vagyis használható, ha $F<0.5$.
             \par
-            A Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható. Magneto-kvázistacionárius közelítést használok, valamint a $\sigma$ és $\mu$ anyagjellemzők egy-egy skalárral leírhatóak.
+            A Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletrendszerben látható. Magneto-kvázistacionárius közelítést használok, valamint a $\sigma$ és $\mu$ anyagjellemzők egy-egy időben állandó skalárral leírhatóak.
             \begin{equation}\label{equ:maxwell}
                 \begin{aligned}
                 \rot \textbf{H}~&=~{\bf J} \\
@@ -221,9 +222,16 @@
                 \textbf{J}~&=~\sigma\textbf{E} + \textbf{J}_i
                 \end{aligned}
             \end{equation}% TODO maxwell-egyenletek nevei
-            A $\textbf{J}_i$ áramsűrűség csak $z$ irányú, emiatt az \huge első maxwellegyenlet neve\normalsize miatt a rá merőleges $\textbf{H}$ mágneses térerősségnek csak $\varphi$-irányú komponense lesz. A $\textbf{H}$ változása pedig \huge a második maxwell-egyenlet\normalsize miatt szintén csak $z$ irányú, $\sigma\textbf{E}$ vezetési áramot hozhat létre, tehát az eredő $\textb{J}$ áramnak mindig csak $z$-irányú komponense lesz, a $\textbf{H}$ térerősségnek pedig csak $\varphi$-irányú komponense, így elég csupán ezekkel a komponensekkel foglalkozni, amelyeket mint skalármennyiségekként lehet meghatározni.
+            A $\textbf{J}_i$ gerjesztő áramsűrűség csak $z$ irányú, így az Amp\`ere-törvény miatt a rá merőleges $\textbf{H}$ mágneses térerősségnek csak $\varphi$-irányú komponense lesz. A $\textbf{H}$ változása pedig a Faraday-törvény miatt szintén csak $z$ irányú, $\sigma\textbf{E}$ vezetési áramot hozhat létre, tehát az eredő $\textbf{J}$ áramnak mindig csak $z$-irányú komponense lesz, a $\textbf{H}$ térerősségnek pedig csak $\varphi$-irányú komponense, így elég csupán ezekkel a komponensekkel foglalkozni, amelyeket mint skalármennyiségekként lehet meghatározni.
+            \begin{equation}\label{equ:komponens}
+                \begin{aligned}
+                    \textbf{H} &= H_{\varphi}\textbf{e}_\varphi\\
+                    \textbf{J} &= J_{z}\textbf{e}_z\\
+                    \textbf{E} &= E_{z}\textbf{e}_z
+                \end{aligned}
+            \end{equation}
             \par
-            \Aref{equ:maxwell}. egyenlet kifejezéseit átrendezve a következőhöz juthatunk:
+            \Aref{equ:maxwell}. egyenletrendszer kifejezéseit átrendezve \aref{equ:dhdt} egyenletben látható összefüggéshez jutunk. Ennek egy véges differenciálokkal kifejezett alakját használva áll elő a szimuláció során az idő szerinti derivált közelítő értéke.
             \begin{equation}\label{equ:dhdt}
                 \begin{aligned}
                     \dfrac{\partial \textbf{H}}{\partial t} &= -\dfrac{1}{\sigma\mu}\rot\rot\textbf{H}\\%TODO véges differenciás képlet ehhez
@@ -231,8 +239,19 @@
             \end{equation}
             \par
             Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott. Ezen kívül a forgási szimmetria miatt az $r=0$ pontban is ismerten $\textbf{H}_{varphi}=0$ a gerjesztéstől függetlenül. Ha $n$ db. diszkretizáló ponttal dolgozunk, akkor tehát két pontra már adott a megoldás $\textbf{H}_{\varphi}$-re vonatkozóan, így $n-2$ pontra kell azt kiszámítani. \Aref{equ:dhdt} kifejezés szerint véges differencia közelítéssel kiszámítható egy adott időlépésbeli mágneses térerősség eloszlásából annak az idő szerinti deriváltja, ami felhasználható az időléptetéshez mindkétféle időlépéses sémában. Így az időléptetéshez nincs szükség az $\textbf{E}$ vagy $\textbf{J}$ terek kiszámolására, ezek meghatározása csak egy utófeldolgozási lépést jelent.
-            \par
         \subsection{Redukált báziú megoldás}
+            A teljes rendű megoldás időben a gerjesztő impulzus hosszának kétszereséig terjed a kísérleteimben. Ennyi idő elteltével már a tranziens válasz lényegi része lejátszódik a tapasztalataim szerint. Ennek az időtartamnak az első kis részére, a kísérletek során \qtyrange{7}{15}{\%}-ára keletkező megoldás szolgál a POD bemeneti mintamátrixaként, amiben egy-egy oszlop, vagyis minta, egy adott $t$-hez tartozó időlépésre érvényes megoldás $H_{\varphi}$-re, amit $\textbf{H}_{\varphi}(t)$-vel jelölök.
+            \begin{equation}\label{equ:dhdt}
+                \begin{aligned}
+                    \textbf{S} &= \begin{bmatrix}
+                        \textbf{H}_{\varphi}(0\cdot\Delta t)\quad
+                        \textbf{H}_{\varphi}(1\cdot\Delta t)\quad
+                        \textbf{H}_{\varphi}(2\cdot\Delta t)\quad
+                        \hdots\quad
+                        \textbf{H}_{\varphi}(k\cdot\Delta t) \end{bmatrix}
+                \end{aligned}
+            \end{equation}
+            Megjegyzem
             \begin{figure}[h]
                 \centering
                 \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}

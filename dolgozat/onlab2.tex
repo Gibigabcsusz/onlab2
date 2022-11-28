@@ -51,6 +51,7 @@
 \widowpenalty=10000 \clubpenalty=10000 %A fattyú- és árvasorok elkerülése
 \def\hyph{-\penalty0\hskip0pt\relax} % Kötőjeles szavak elválasztásának engedélyezése
 
+\frenchspacing
 \pagestyle{plain} 
 
 %\listfiles % a package-ek kilistázása a logba
@@ -188,7 +189,7 @@
                 \caption{A szimulált modell}
                 \label{fig:modell}
             \end{figure}
-             A vezető rúd keresztmetszete a szaggatottal jelölt kör. A használt henger-koordinátarendszer bázisvektorai ${\bf e}_{z}, {\bf e}_{\varphi}$ és ${\bf e}_{r}$. A vezető henger szimmetriatengelye $z$-irányú és szintén $z$-irányú benne a felületi áramsűrűség vektora is, ez az áramsűrűség a vezető hossza mentén nem változik. A modell általában $z$-irányú eltolásra és a szimmetriatengely körüli ($\varphi$ irányú) forgatásra invariáns, emiatt csak az egyes mennyiségek $r$ sugártól való függését kell vizsgálni, emiatt egydimenziós a modell.
+             A vezető rúd keresztmetszete a szaggatottal jelölt kör. A vezető hengernek $\sigma$ fajlagos vezetése és $\mu=\mu_0$ permittivitása van, mindkét mennyi. A használt henger-koordinátarendszer bázisvektorai ${\bf e}_{z}, {\bf e}_{\varphi}$ és ${\bf e}_{r}$. A vezető henger szimmetriatengelye $z$-irányú és szintén $z$-irányú benne a felületi áramsűrűség vektora is, ez az áramsűrűség a vezető hossza mentén nem változik. A modell általában $z$-irányú eltolásra és a szimmetriatengely körüli ($\varphi$ irányú) forgatásra invariáns, emiatt csak az egyes mennyiségek $r$ sugártól való függését kell vizsgálni, emiatt egydimenziós a modell.
              \par
              A vezető keresztmetszetére elő van írva az összesített áram időfüggvénye, $I(t)$, de a skin-hatás miatt a vezető belsejében nem egyenletes az áramsűrűség, hanem a sugár mentén haladva változik. Ugyanígy a vezető belsejében létrejövő $H_\varphi$ és $E_z$ is függ a sugártól. Ezek a mennyiségek továbbá időfüggőek is, de a vezető henger önindukciója miatt nem pontosan a gerjesztéssel együtt változnak. Ezeknek a mennyiségeknek az időbeli alakulása a kérdés, ezeket határozza meg a szimuláció egy adott gerjesztés mellett.
             \par
@@ -203,9 +204,13 @@
                 \label{equ:fe}
                 H_{\varphi}(r,t+\Delta t) \approx & \dfrac{\partial H_{\varphi}(r,t)}{\partial t} \cdot \Delta t
             \end{align}
-            Az előrelépő Euler séma időléptetése \aref{equ:fe}. egyenletben látható.
+            Az előrelépő Euler séma időléptetése \aref{equ:fe}. egyenletben látható. Ez az időlépéses séma könnyen használhatatlan lesz, ha rosszul választjuk meg a térbeli diszkretizáló távolságot, ($\Delta r$), valamint az időlépés hosszát ($\Delta t$). A szimuláció előtt a szkript konvergenciavizsgálatot végez, amihez a következő képletet használja:
+            \begin{align}
+                F &= \dfrac{\alpha \Delta t}{\Delta r^2}, \quad \alpha = \dfrac{1}{\mu \sigma}
+            \end{align}
+            A megoldás csak akkor konvergens, vagyis használható, ha $F<0.5$.
             \par
-            A  Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható.
+            A Maxwell-egyenleteknek a modellben használt alakja \aref{equ:maxwell}. egyenletben látható (magneto-kvázistacionárius közelítés).
             \begin{equation}\label{equ:maxwell}
                 \begin{aligned}
                 \rot \textbf{H}~&=~{\bf J} \\
@@ -216,6 +221,7 @@
                 \textbf{J}~&=~\sigma\textbf{E} + \textbf{J}_i
                 \end{aligned}
             \end{equation}
+            Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott.
             \par
             \begin{figure}[h]
                 \centering

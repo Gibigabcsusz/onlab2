@@ -8,7 +8,7 @@ clc
 % spatial discretization is done by finite differences, whereas the time
 % evolution is calculated by the fwd Euler scheme.
 
-n = 50;             % discretization of r
+n = 50;             % discretization of r. n = (full order) + 2
 a = 0.005;          % [m] radius of the wire
 t_pulse = 5e-4;     % [s] pulse duration, worth to try:
                     % a) 5e-4 fast variation, strong transient skin effect
@@ -81,13 +81,14 @@ M_red_fe = U_hat_fe'*M*C_fe;
 
 %% reduced order solution using Forward Euler method
 nStep_red = nStep-nSampled_fe; % no. of new steps
-H_all_red_fe = [C_fe'*H_all(:,1:nSampled_fe) zeros(redOrder+2, nStep_red)];
+%H_all_red_fe = [C_fe'*H_all(:,1:nSampled_fe) zeros(redOrder+2, nStep_red)];
+H_all_red_fe = zeros(redOrder+2, nStep_red);
 
 H = H_all(2:end-1,nSampled_fe); % starting from the end of sampling
 H_red = U_hat_fe'*H;
 t = nSampled_fe*dt;
 
-for i = nSampled_fe+1:nStep
+for i = 1:nStep-nSampled_fe
     Hsurf = current(t, t_pulse)/(2*pi*a); % magnetic field on the surface (r=a) from Amper's law
     H_all_red_fe(:,i) = [0; H_red; Hsurf];
     dHdt_red = fun(t, H_red, M_red_fe); % dH/dt derivative
@@ -97,9 +98,9 @@ end
 
 % converting back from reduced base to original base
 H_aa_fe = zeros(n,nStep);
-H_aa_fe(1,:) = H_all_red_fe(1,:);
-H_aa_fe(end,:) = H_all_red_fe(end,:);
-H_aa_fe(2:end-1,:) = U_hat_fe*H_all_red_fe(2:end-1,:);
+H_aa_fe(end,:) = [H_all(end,1:nSampled_fe), H_all_red_fe(end,:)];
+H_aa_fe(2:end-1,:) = [H_all(2:end-1,1:nSampled_fe), U_hat_fe*H_all_red_fe(2:end-1,:)];
+%H_aa_ode(2:end-1,:) = [H_ode_sampled, U_hat_ode*H_ode_red];
 
 %% full solution using the built-in ode45 solver
 t_range = [0, Tmax];
@@ -194,7 +195,7 @@ xlabel('t [s]')
 ylabel('H_{\phi} [A/m]');
 xline((nSampled_fe-1)*dt,'linewidth',lw);
 legend('r=a', 'r=0.7a', 'r=0.3a', 'r=0.7a (redukált)', 'r=0.3a (redukált)', 'POD bemenet vége')
-title('Teljes (n='+string(n)+') és Redukált bázisú (n='+string(redOrder)+') Előrelépő Euler')
+title('Teljes (n='+string(n-2)+') és Redukált bázisú (r='+string(redOrder)+') Előrelépő Euler')
 hold off
 
 %% comparing the two ode45 solutions
@@ -212,7 +213,7 @@ xlabel('t (s)')
 ylabel('H_{\phi} [A/m]');
 xline(t_ode_sampled(end),'linewidth',lw);
 legend('r=a', 'r=0.7a', 'r=0.3a', 'r=0.7a (redukált)', 'r=0.3a (redukált)', 'POD bemenet vége')
-title('Teljes (n='+string(n)+') és Redukált bázisú (n='+string(redOrder)+') ode45')
+title('Teljes (n='+string(n-2)+') és Redukált bázisú (r='+string(redOrder)+') ode45')
 hold off
 
 %% plottong the importance of the vectors in the reduced base
@@ -245,7 +246,7 @@ plot(U_ode(:,5), 'linewidth', lw)
 legend('\Psi_1', '\Psi_2', '\Psi_3', '\Psi_4', '\Psi_5', 'Location', 'northwest')
 xlabel('Mintavételi pontok a sugár mentén')
 ylabel('Vektor értéke az adott pontban')
-title('A redukált bázis legfontosabb vektorai')
+title('A \Psi bázis legfontosabb vektorai')
 ylim([-0.5 0.5]);
 hold off
 
@@ -258,21 +259,21 @@ plot(U_ode(:,14), 'linewidth', lw)
 legend('\Psi_{11}', '\Psi_{12}', '\Psi_{13}', '\Psi_{14}', 'Location', 'northwest')
 xlabel('Mintavételi pontok a sugár mentén')
 ylabel('Vektor értéke az adott pontban')
-title('A redukált bázis kevésbé fontos vektorai')
+title('A \Psi bázis kevésbé fontos vektorai')
 ylim([-0.5 0.5]);
 hold off
 
 %% calculating error compared to the full model
 error_fe = abs(H_all(2:end-1,nSampled_fe+1:nStep)-H_aa_fe(2:end-1,nSampled_fe+1:nStep));
 rel_error_fe_all = error_fe'./H_all(2:end-1,nSampled_fe+1:nStep)';
-rel_max_error_fe_all = error_fe'/max(max(H_all));
+abs_error_fe_all = error_fe';
 
 rel_error_fe = zeros(n-2,n_plot);
 rel_max_error_fe = zeros(n-2,n_plot);
 t_plot = t_sampled_end_fe:((Tmax-t_sampled_end_fe)/(n_plot-1)):Tmax;
 for i=1:n-2
     rel_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),rel_error_fe_all(:,i),t_plot)';
-    rel_max_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),rel_max_error_fe_all(:,i),t_plot)';
+    rel_max_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),abs_error_fe_all(:,i),t_plot)';
 end
 
 figure(7)
@@ -289,7 +290,7 @@ imagesc(rel_max_error_fe,"XData",t_plot,"YData",dr:dr:(a-dr))
 hold on
 xlabel('t [s]')
 ylabel('r [m]')
-title('Hiba a globális maximumhoz képest');
+title('Abszolút hiba [A/m]');
 colorbar;
 
 hold off
@@ -330,7 +331,7 @@ if(save==1)
     
     figure(5) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_1_4'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_base_1_5'+'.eps','ContentType','vector'); % save
     
     figure(6) % select vector importance figure
     ax=gca; % get currently selected figure
@@ -342,7 +343,7 @@ if(save==1)
     
     figure(8) % select vector importance figure
     ax=gca; % get currently selected figure
-    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_rel_max_error'+'.eps','ContentType','vector'); % save
+    exportgraphics(ax,'output/euler_'+string(relative_t_sampled)+'_'+string(redOrder)+'_abs_error'+'.eps','ContentType','vector'); % save
     
     figure(9) % select vector importance figure
     ax=gca; % get currently selected figure

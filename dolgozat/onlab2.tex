@@ -20,6 +20,7 @@
 \usepackage{graphicx}
 %\usepackage[hang]{caption}
 \usepackage{subcaption}
+\usepackage{blkarray,booktabs,bigstrut} % a címkézett mátrixhoz
 %\usepackage{enumerate}
 %\usepackage{psfrag}
 \usepackage[left=20mm,right=20mm,top=20mm,bottom=25mm]{geometry}
@@ -174,7 +175,7 @@
             %TODO wikipedia szerint thin, compact és truncated. Lehet, hogy föntebb is át kéne írni, hogy hogy érdemes kiszámolni
             A takarékos SVD változatok \aref{fig:reduced_svd_sajat}. ábrán láthatóak olyan esetben, amikor $k < n$. Ezen belül a teljes SVD az, aminél ${\bf \Sigma}$ ugyanolyan méretű, mint a felbontott ${\bf S}$ mátrix, ezzel a változattal írtam fel előzőleg a mintamátrix felbontását (\ref{fig:reduced_svd_sajat_1}. ábra).
             \par
-            A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\aref{fig:reduced_svd_sajat_1}. ábra). Ez a következőkben különbözik a teljes SVD-től. Éljünk a következő elnevezeéssel: $m=min(n,k)$. A ${\bf U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem ${\bf \adj{V}}$-beli oszlop, és hasonlóan ${\bf \adj{V}}$ soraival is, de az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül egyszerre csak az egyiknek a megcsonkítására van szükség $n$ és $k$ viszonyától függően. Ezen kívül a ${\bf \Sigma}$ mátrixnak is kihagyjuk a csupa 0 részét, amely az utolsó $n-m$ sora vagy az utolsó $k-m$ oszlopa, így egy $m \times m$ méretű diagonálmátrix lesz belőle, aminek minden diagonáleleme egy szinguláris érték. Ekkor a kompakt SVD-ben ${\bf U_k} \in \mathbb{C}^{n\times m}, {\bf\Sigma_k} \in \mathbb{C}^{m\times m}, {\bf \adj{V_k}} \in \mathbb{C}^{m\times k}$. A kompakt SVD a teljes változathoz képest nem jár információveszteséggel ${\bf S}$-re nézve. Az SVD-nek ez a változata használható MATLAB-ban, ha megadjuk az \verb|svd()| függvénynek a \verb|`econ`| opciót.
+            A kompakt SVD az, amit \aref{sec:POD}. szakaszban felvázoltam (\ref{fig:reduced_svd_sajat_1}. ábra). Ez a következőkben különbözik a teljes SVD-től. Éljünk a következő elnevezeéssel: $m=min(n,k)$. A ${\bf U}$ mátrixból kihagyjuk azokat az oszlopokat, amelyekhez nem tartozik sem szinguláris érték, sem ${\bf \adj{V}}$-beli oszlop, és hasonlóan ${\bf \adj{V}}$ soraival is, de az ${\bf U}$ és ${\bf \adj{V}}$ mátrixok közül egyszerre csak az egyiknek a megcsonkítására van szükség $n$ és $k$ viszonyától függően. Ezen kívül a ${\bf \Sigma}$ mátrixnak is kihagyjuk a csupa 0 részét, amely az utolsó $n-m$ sora vagy az utolsó $k-m$ oszlopa, így egy $m \times m$ méretű diagonálmátrix lesz belőle, aminek minden diagonáleleme egy szinguláris érték. Ekkor a kompakt SVD-ben ${\bf U_k} \in \mathbb{C}^{n\times m}, {\bf\Sigma_k} \in \mathbb{C}^{m\times m}, {\bf \adj{V_k}} \in \mathbb{C}^{m\times k}$. A kompakt SVD a teljes változathoz képest nem jár információveszteséggel ${\bf S}$-re nézve. Az SVD-nek ez a változata használható MATLAB-ban, ha megadjuk az \verb|svd()| függvénynek a \verb|`econ`| opciót.
             \par
             A vékony SVD egy következő redukcióval jön létre a kompakt változatból. A kompakt SVD esetén még a szinguláris értékek között lehetnek 0 értékűek, amelyek a ${\bf \Sigma_v}$ főátlójának utolsó elemei. Tegyük fel, hogy $l$ db. nemnulla szinguláris érték van. A 0 szinguláris értékekhez tartozó ${\bf U_v}$-beli oszlopok és ${\bf \adj{V_v}}$-beli sorok szintén nem hordoznak hasznos információt, így ezektől is meg lehet szabadulni, valamint ${\bf \Sigma_v}$-ból is elég csak azt az $l\times l$-es bal felső részmátrixot megtartani, aminek a főátlójában a nemnulla szinguláris értékek vannak. Ekkor ${\bf U_v} \in \mathbb{C}^{n\times l}, {\bf \Sigma_v} \in \mathbb{C}^{l\times l}, {\bf \adj{V_v}} \in \mathbb{C}^{l\times k}$. Mivel itt már azt vizsgáljuk, hogy a szinguláris értékek 0 értékűek-e, felmerül az árbázolási hiba kérdése, ami miatt tévesen sokkal több szinguláris értéket is pozitívnak vélhet az algoritmus, mint amennyi valójában jelentős méretű. Erre a problémára nyújt megoldást az ábrázolási hibahatár megadása. Még ez a változat sem jár információvesztéssel, de az ábrázolási hibahatár használata miatt más numerikus pontatlanságból adódó zaj fogja terhelni a vékony SVD felbontásból visszaállított ${\bf S}$ mátrixot, mint az előző két esetben.
             \par
@@ -184,10 +185,10 @@
         \subsection{A modell}
             A szimulációval egy kör keresztmetszetű, $a$ sugarú, végtelen hosszú, véges vezetőképességű vezetőben létrejövő mágneses és elektromos teret vizsgáltam. \Aref{fig:modell}. ábrán látható módon áll össze a modell. 
             \par
-            \begin{figure}[h]
+            \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.48\textwidth]{kep/modell.pdf}
-                \caption{A szimulált modell}
+                \caption{A szimulált modell.}
                 \label{fig:modell}
             \end{figure}
              A vezető rúd keresztmetszete a szaggatottal jelölt kör. A vezető hengernek $\sigma$ fajlagos vezetése és $\mu=\mu_0$ permittivitása van, mindkét mennyi. A használt henger-koordinátarendszer bázisvektorai ${\bf e}_{z}, {\bf e}_{\varphi}$ és ${\bf e}_{r}$. A vezető henger szimmetriatengelye $z$-irányú és szintén $z$-irányú benne a felületi áramsűrűség vektora is, ez az áramsűrűség a vezető hossza mentén nem változik. A modell általában $z$-irányú eltolásra és a szimmetriatengely körüli ($\varphi$ irányú) forgatásra invariáns, emiatt csak az egyes mennyiségek $r$ sugártól való függését kell vizsgálni, emiatt egydimenziós a modell.
@@ -238,10 +239,17 @@
                 \end{aligned}
             \end{equation}
             \par
-            Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott. Ezen kívül a forgási szimmetria miatt az $r=0$ pontban is ismerten $\textbf{H}_{varphi}=0$ a gerjesztéstől függetlenül. Ha $n$ db. diszkretizáló ponttal dolgozunk, akkor tehát két pontra már adott a megoldás $\textbf{H}_{\varphi}$-re vonatkozóan, így $n-2$ pontra kell azt kiszámítani. \Aref{equ:dhdt} kifejezés szerint véges differencia közelítéssel kiszámítható egy adott időlépésbeli mágneses térerősség eloszlásából annak az idő szerinti deriváltja, ami felhasználható az időléptetéshez mindkétféle időlépéses sémában. Így az időléptetéshez nincs szükség az $\textbf{E}$ vagy $\textbf{J}$ terek kiszámolására, ezek meghatározása csak egy utófeldolgozási lépést jelent.
-        \subsection{Redukált báziú megoldás}
-            A teljes rendű megoldás időben a gerjesztő impulzus hosszának kétszereséig terjed a kísérleteimben. Ennyi idő elteltével már a tranziens válasz lényegi része lejátszódik a tapasztalataim szerint. Ennek az időtartamnak az első kis részére, a kísérletek során \qtyrange{7}{15}{\%}-ára keletkező megoldás szolgál a POD bemeneti mintamátrixaként, amiben egy-egy oszlop, vagyis minta, egy adott $t$-hez tartozó időlépésre érvényes megoldás $H_{\varphi}$-re, amit $\textbf{H}_{\varphi}(t)$-vel jelölök.
+            Mivel a hengerre az összáram időfüggvénye adott, így ezzel együtt a felszíni mágneses térerősség is adott. Ezen kívül a forgási szimmetria miatt az $r=0$ pontban is ismerten $\textbf{H}_{\varphi}=0$ a gerjesztéstől függetlenül. Ha $n$ db. diszkretizáló ponttal dolgozunk, akkor tehát két pontra már adott a megoldás $\textbf{H}_{\varphi}$-re vonatkozóan, így $n-2$ pontra kell azt kiszámítani. \Aref{equ:dhdt}. egyenlet szerint véges differencia közelítéssel kiszámítható egy adott időlépésbeli mágneses térerősség eloszlásából annak az idő szerinti deriváltja, ami felhasználható az időléptetéshez mindkétféle időlépéses sémában:
             \begin{equation}\label{equ:dhdt}
+                \begin{aligned}
+                    \dfrac{\Delta \textbf{H}}{\Delta t} &\approx -\dfrac{1}{\sigma\mu}\mathbf{R}\textbf{H}
+                \end{aligned}
+            \end{equation}
+            ahol $\mathbf{R}$ a $\rot\rot$ operátor véges differencia közelítésének mátrixa.
+            Így az időléptetéshez nincs szükség az $\textbf{E}$ vagy $\textbf{J}$ terek kiszámolására, ezek meghatározása csak egy utófeldolgozási lépést jelent.
+        \subsection{Redukált báziú megoldás}
+            A teljes rendű megoldás időben a gerjesztő impulzus hosszának kétszereséig terjed a kísérleteimben ($T$ a teljes időtartam hossza). Ennyi idő elteltével már a tranziens válasz lényegi része lejátszódik a tapasztalataim szerint. Ennek az időtartamnak az első kis részére, $c\cdot T$ időtartamra keletkező megoldás szolgál a POD bemeneti mintamátrixaként, amiben egy-egy oszlop, vagyis minta, egy adott $t$-hez tartozó időlépésre érvényes megoldás $H_{\varphi}$-re, amit $\textbf{H}_{\varphi}(t)$-vel jelölök. A kísérleteim során $c=0.07$, $0.15$ és $0.3$ értékeket próbáltam ki.
+            \begin{equation}\label{equ:minta}
                 \begin{aligned}
                     \textbf{S} &= \begin{bmatrix}
                         \textbf{H}_{\varphi}(0\cdot\Delta t)\quad
@@ -254,82 +262,148 @@
             \par
             Megjegyzem, hogy valószínűleg nem mindig célszerű a mintavételezett időtartam összes időlépését felhasználni $\textbf{S}$ megkonstruálásához. Ha jól meg tudjuk választani a mintákat, akkor valószínűleg elég a redukált bázis számosságánál csak legfeljebb \qtyrange{1}{2}{} nagyságrenddel nagyobb számú minta a rendszerből, attól függetlenül, hogy hány mintát tartalmazó időintervallumot mintavételezünk. Ennek a csökkentett mintavételezésnek a hatását a félév során már nem volt időm megvizsgálni.
             \par
-            A $\Psi$ bázist a MATLAB \verb|svd()| függvényével állítom elő. Ez a függvény mint egy melléktermékként az $\textbf{S}$ mátrix teljes SVD felbontását kiszámítja, így a szinguláris értékek mátrixát, $\Sigma$-t is. A szinguláris értékek egy futtatásból \aref{fig:sigma}. ábrán láthatóak.
-            \begin{figure}[h]
+            A $\Psi$ bázist a MATLAB \verb|svd()| függvényével állítom elő. Ez a függvény mint egy melléktermékként az $\textbf{S}$ mátrix teljes SVD felbontását kiszámítja, így a szinguláris értékek mátrixát, $\Sigma$-t is. A szinguláris értékek egy futtatásból \aref{fig:sigma}. ábrán láthatóak. Az ábrán elég szembetűnő, hogy a szomszédos szinguláris értékek között elég nagy különbség van, főként az első néhány szinguláris értéknél. Ez a redukált rendű szimuláció szempontjából egy nagyon jó hír, hiszen ekkor ha csak az első néhány bázisvektort használjuk is, a megoldás jól fogja közelíteni a teljes rendűt.
+            \begin{figure}[h!]
                 \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_sv.eps}
-                \caption{A szimulált modell}
+                \includegraphics[width=0.6\textwidth]{kep/euler_0.15_4_sv.eps}
+                \caption{A szinguláris értékek az előrelépő Euler megoldásból.}
                 \label{fig:sigma}
             \end{figure}
+            \Aref{fig:sigma}. ábrán bejelölt határvonalak közül a ,,numerikus hibá''-t elválasztó vonal elég egyértelmű helyen van, ott tényleg van egy egyértelmű törés az értékek sorozatában. Ezzel szemben a ,,fontos'' és ,,nem fontos'' részek közötti vonal pontos helye már nem magától értetődő, attól függ, hogy mekkora hibát engedhetünk meg a szimuláció során.
             \par
-            asd
+            A numerikus hibák által dominált szinguláris értékek egymástól csak nagyon kevéssé térnek el, a többség majdnem pontosan \num{1e-13} értékű. A legnagyobb szinguláris érték pedig \num{1e3} körüli. Ezek hányadosa tehát körülbelül \num{1e16}. A számok MATLAB-ban a sztenderd double formátumban tárolódnak el, amiknek az értékes helyiértékeket tároló része, vagyis a mantissza 52 bites. Az 52 biten ábrázolható legnagyobb szám ($2^{52}-1$) körülbelül \num{4.5035e15}, ami jól illeszkedik a tapasztalt relatív pontossághoz. Gyakorlatilag amikor egy-egy double-ként tárolt számot adna össze a számítógép, amelyek hányadosa eléri a $2^{52}$-t, akkor az exponensek egyeztetéséhez a kisebb szám mantisszáját legalább 52 helyiértékkel kell léptetelni, de ezáltal az összes értékes bit kiléptetődik és 0-kkal töltődik fel a helyük. Emiatt az összeadás eredménye pontosan a nagyobb szám lesz, mintha hozzá sem adtuk volna a kisebbet, így a kisebb szám effektíve 0. Az SVD kiszámolása közben  ilyen double összeadások miatt lehetetlenül el a legnagyobbhoz képest nagyon kis szinguláris értékek és az ezekhez tartozó szinguláris vektorok kiszámolása.
+            \par
+            Az SVD kimenetei között van az $\textbf{U}$ mátrix is, ami az új bázisvektorokat ($\textbf{u}_i$) tartalmazza fontosság szerint csökkenő sorrendben az oszlopaiban. Ezek közül a legfontosabb $r$ db-ot megtartva és azonos sorrendben egy új mátrixba rendezve kapjuk a redukált bázis $\mathbf{\hat{U}}$ mátrixát, ami az új, redukált bázisból a standard bázisba való áttérés mátrixa.
+            \begin{equation}\label{equ:uhat}
+                \begin{aligned}
+                    \mathbf{\hat{U}} =
+                    \begin{bmatrix}
+                        \textbf{u}_1\quad\textbf{u}_2\quad\textbf{u}_3\quad\hdots\quad\textbf{u}_r
+                    \end{bmatrix}
+                \end{aligned}
+            \end{equation}
+            \par
+            Érdemes szemügyre venni magukat a bázisvektorokat is, amelyek közül néhány \aref{fig:bazis}. ábrán látható. Fontos megjegyezni, hogy az egyes bázisvektorok valódi térerősség-eloszlásokat jelentenek, amelyeknek valamilyen lineáris kombinációjával írjuk le a rendszer aktuális állapotát.
             \begin{figure}[h]
                 \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/euler_0.15_4_base_1_5.eps}
+                    \caption{Az öt leglényegesebb vektorok.}
+                \end{subfigure}
+                \begin{subfigure}{0.48\textwidth}
+                    \includegraphics[width=\textwidth]{kep/euler_0.15_4_base_11_14.eps}
+                    \caption{Négy lényegtelen vektor.}
+                \end{subfigure}
+                \caption{A $\Psi$ bázis néhány vektora.}
+                \label{fig:bazis}
             \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/ode45_0.15_4_td.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.07_4_td.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.07_8_td.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_2_td.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_base_1_4.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_base_11_14.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_rel_error.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_rel_max_error.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_ez_waterfall.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_hphi_waterfall.eps}
-                \caption{A szimulált modell}
-                \label{fig:modell}
-            \end{figure}
-            \newpage
+            \par
+            Mivel ${\bf U} \in \mathbb{C}^{n \times n}$ unitér, ezért:
+            \begin{equation}
+                \begin{aligned}
+                    \mathbf{U}\adj{\mathbf{U}} = \adj{\mathbf{U}}\mathbf{U} = \mathbf{I}_{n\times n}
+                \end{aligned}
+            \end{equation}
+            De a csonkítás miatt az $\mathbf{\hat{U}} \in \mathbb{C}^{n \times r}$ mátrixra már csak a következő igaz:
+            \begin{equation}
+                \begin{aligned}
+                    \adj{\mathbf{\hat{U}}}\mathbf{\hat{U}} = \mathbf{I}_{r\times r}
+                \end{aligned}
+            \end{equation}
+            Az $\mathbf{\hat{U}}$ mátrixnak egy további fontos tulajdonsága, hogy ennek a mátrixnak a segítségével lehet egy standard bázisban felírt $\mathbf{x} \in \mathbb{C}^{n}$ vektort a redukált $\Psi'$ bázisba vetíteni, valamint a fordított irányú bázistranszformációt is el lehet végezni $\adj{\mathbf{\hat{U}}}$ segítségével:
+            \begin{equation}
+                \begin{aligned}
+                    \adj{\mathbf{\hat{U}}}\mathbf{x} &= \mathbf{y}\\
+                    \mathbf{\hat{U}}\mathbf{y} &= \mathbf{x'} \ne \mathbf{x}\\
+                    \mathbf{x'} &\approx \mathbf{x}
+                \end{aligned}
+            \end{equation}
+            ahol $\mathbf{y} \in \mathbb{C}^{r}$ a $\Psi'$ bázisbeli reprezentációja $\mathbf{x}$-nek. Az iylen irányú éttérés információvesztéssel jár, de a POD tulajdonságai miatt az euklideszi távolság $\mathbf{x}$ és $\mathbf{x'}$ között kicsi.
+            \par
+            Az időléptetéshez még szükséges az $\mathbf{R}$ mátrixnak a vetítése a $\Psi'$ bázisba, vagyis $\mathbf{R}_{\Psi}$ kiszámolása. Ezt a jól ismert bázistranszformációs képlet alapján lehet megtenni:
+            \begin{equation}
+                \adj{\mathbf{\hat{U}}}\mathbf{R}\mathbf{\hat{U}} = \mathbf{R}_{\Psi}
+            \end{equation}
+            Az eddigiek felhasználásával pedig kiszámíthatjuk az $\mathbf{R}\mathbf{x'}$ egy közelítését a $\Psi'$ bázisban anélkül, hogy az egyes időlépések közben bármikor is vissza kellene térni a standard bázisba:
+            \begin{equation}
+                \mathbf{R}_{\Psi}\mathbf{y} =
+                \adj{\mathbf{\hat{U}}}\mathbf{R}\mathbf{\hat{U}}\mathbf{y} =
+                \adj{\mathbf{\hat{U}}}\mathbf{R}\mathbf{x'}
+            \end{equation}
+            \par
+            A redukált bázisban való számolás összefoglalva a következőképpen zajlik. A mintavételezett időintervallum alapján megkonstruálom a $\Psi'$ bázist. Ebbe a bázisba vetítem a mintavételezés végén a rendszer aktuális állapotát, valamint a $\rot\rot$ operátor mátrixát. Ezek után már csak a redukált bázisban számolok tovább. A szimuláció végén a megoldást visszavetítem a standard bázisba, de ezt a vetítést nem feltétlenül kell megtenni minden időlépés minden térbeli pontjára, mind térben, mind időben lehet szelektálni.
+    \section{Eredmények}
+        A teljes rendű szimulációt is végig futtattam, hogy össze lehessen hasonlítani a redukált megoldással. A teljes rendű Euler-séma megoldásának vízesésdiagramjai \aref{fig:vizeses}. ábrán láthatóak.
+        \begin{figure}[h]
+            \centering
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_4_hphi_waterfall.eps}
+                %\caption{$H_{\varphi}$ vízesésdiagramja}
+            \end{subfigure}
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_4_ez_waterfall.eps}
+                %\caption{$E_{z}$ vízesésdiagramja}
+            \end{subfigure}
+            \caption{Teljes rendű megoldások az előrelépő Euler sémával.}
+            \label{fig:vizeses}
+        \end{figure}
+        \par
+        Külön megoldást készítettem azonos paraméterekkel, mind az egyszerű előrelépő Euler, mind a Runge-Kutta sémák használatával. Ezeknek az eredményei \aref{fig:sema}. ábrán láthatóak.
+        \begin{figure}[h]
+            \centering
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_4_td.eps}
+                \caption{Előrelépő Euler}
+            \end{subfigure}
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/ode45_0.15_4_td.eps}
+                \caption{Runge-Kutta}
+            \end{subfigure}
+            \caption{Megoldások kétféle sémával, teljes és redukált bázisokban ($r=4$ és $c=0.15$).}
+            \label{fig:sema}
+        \end{figure}
+        \par
+        Amint az ábrán is látszik, azonos paraméterek mellett a két időlépéses séma hasonlóan kis hibával működik, amennyiben az előrelépő Euler módszer konvergens. Jobb kvantitatív képet kapunk a redukált bázisú szimuláció pontosságáról, ha a teljes rendű szimuláció összetartozó pontjához viszonyított relatív hibát, valamint az abszolút hibát vizsgáljuk. Ezek az eredmények \aref{hiba}. ábrán láthatóak.
+        \begin{figure}[h]
+            \centering
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_4_rel_error.eps}
+                \caption{Hiba az összetartozó ponthoz képest.}
+            \end{subfigure}
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_4_abs_error.eps}
+                \caption{Abszolút hiba.}
+            \end{subfigure}
+            \caption{Az Euler séma abszolút és relatív hibája ($r=4$ és $c=0.15$).}
+            \label{fig:hiba}
+        \end{figure}
+        \begin{figure}[h]
+            \centering
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.07_4_td.eps}
+                \caption{Hiba az összetartozó ponthoz képest.}
+            \end{subfigure}
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.07_8_td.eps}
+                \caption{Abszolút hiba.}
+            \end{subfigure}
+            \caption{Kevés idő.}
+            \label{fig:keves_ido}
+        \end{figure}
+        \begin{figure}[h]
+            \centering
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.15_2_td.eps}
+                \caption{Hiba az összetartozó ponthoz képest.}
+            \end{subfigure}
+            \begin{subfigure}{0.48\textwidth}
+                \includegraphics[width=\textwidth]{kep/euler_0.3_2_td.eps}
+                \caption{Abszolút hiba.}
+            \end{subfigure}
+            \caption{Kevés vektor.}
+            \label{fig:keves_vektor}
+        \end{figure}
+        %\clearpage
     \bibliography{mybib}
     \bibliographystyle{plain}
 \end{document}

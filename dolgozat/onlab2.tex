@@ -314,8 +314,7 @@
             \begin{equation}
                 \begin{aligned}
                     \adj{\mathbf{\hat{U}}}\mathbf{x} &= \mathbf{y}\\
-                    \mathbf{\hat{U}}\mathbf{y} &= \mathbf{x'} \ne \mathbf{x}\\
-                    \mathbf{x'} &\approx \mathbf{x}
+                    \mathbf{\hat{U}}\mathbf{y} &= \mathbf{x'} \approx \mathbf{x}
                 \end{aligned}
             \end{equation}
             ahol $\mathbf{y} \in \mathbb{C}^{r}$ a $\Psi'$ bázisbeli reprezentációja $\mathbf{x}$-nek. Az iylen irányú éttérés információvesztéssel jár, de a POD tulajdonságai miatt az euklideszi távolság $\mathbf{x}$ és $\mathbf{x'}$ között kicsi.
@@ -333,7 +332,7 @@
             \par
             A redukált bázisban való számolás összefoglalva a következőképpen zajlik. A mintavételezett időintervallum alapján megkonstruálom a $\Psi'$ bázist. Ebbe a bázisba vetítem a mintavételezés végén a rendszer aktuális állapotát, valamint a $\rot\rot$ operátor mátrixát. Ezek után már csak a redukált bázisban számolok tovább. A szimuláció végén a megoldást visszavetítem a standard bázisba, de ezt a vetítést nem feltétlenül kell megtenni minden időlépés minden térbeli pontjára, mind térben, mind időben lehet szelektálni.
     \section{Eredmények}
-        A teljes rendű szimulációt is végig futtattam, hogy össze lehessen hasonlítani a redukált megoldással. A teljes rendű Euler-séma megoldásának vízesésdiagramjai \aref{fig:vizeses}. ábrán láthatóak.
+        Olyan alkalmazások esetén, amikor a tranziens szimulációnál lényeges erőforráscsökkenéssel jár a POD alkalmazása, nem érdemes a teljes rendű szimulációt végig futtatni, csak a POD bemenetének használt időtartam végéig, legfeljebb kicsivel tovább az esetleges nyilvánvaló hibák felismerése céljából. A vizsgálódásomhoz a teljes rendű szimulációt is végig futtattam, hogy össze lehessen hasonlítani a redukált megoldással. A teljes rendű Euler-séma megoldásának vízesésdiagramjai \aref{fig:vizeses}. ábrán láthatóak.
         \begin{figure}[h]
             \centering
             \begin{subfigure}{0.48\textwidth}
@@ -348,7 +347,7 @@
             \label{fig:vizeses}
         \end{figure}
         \par
-        Külön megoldást készítettem azonos paraméterekkel, mind az egyszerű előrelépő Euler, mind a Runge-Kutta sémák használatával. Ezeknek az eredményei \aref{fig:sema}. ábrán láthatóak.
+        Külön megoldást készítettem azonos paraméterekkel, mind az egyszerű előrelépő Euler, mind a Runge-Kutta sémák használatával. Ezeknek az eredményei \aref{fig:sema}. ábrán láthatóak. Az ábrák alapján mindkét séma hasonlóan jó megoldást ad, így többnyire bármelyik használható. A továbbiakban elsősorban az Euler-sémán mutatom be a felmerülő jelenségeket.
         \begin{figure}[h]
             \centering
             \begin{subfigure}{0.48\textwidth}
@@ -363,7 +362,7 @@
             \label{fig:sema}
         \end{figure}
         \par
-        Amint az ábrán is látszik, azonos paraméterek mellett a két időlépéses séma hasonlóan kis hibával működik, amennyiben az előrelépő Euler módszer konvergens. Jobb kvantitatív képet kapunk a redukált bázisú szimuláció pontosságáról, ha a teljes rendű szimuláció összetartozó pontjához viszonyított relatív hibát, valamint az abszolút hibát vizsgáljuk. Ezek az eredmények \aref{hiba}. ábrán láthatóak.
+        Amint az ábrán is látszik, azonos paraméterek mellett mindkét időlépéses séma esetén hasonlóan kis hibával működik a redukált rendű közelítés. Jobb kvantitatív képet kapunk a redukált bázisú szimuláció pontosságáról, ha a teljes rendű szimuláció összetartozó pontjához viszonyított relatív hibát, valamint az abszolút hibát vizsgáljuk. Ezek az eredmények \aref{hiba}. ábrán láthatóak.
         \begin{figure}[h]
             \centering
             \begin{subfigure}{0.48\textwidth}
@@ -377,32 +376,40 @@
             \caption{Az Euler séma abszolút és relatív hibája ($r=4$ és $c=0.15$).}
             \label{fig:hiba}
         \end{figure}
+        A redukált rendű szimulációnak több paraméterét lehet szabadon megadni, ezek között valamilyen kompromisszumot kell találni. A kompromisszummal a cél, hogy még elfogadható hiba mellett, minél kisebb legyen az erőforrásigénye a redukált rendű közelítésnek. A megválasztható paraméterek a redukált bázis rendje, $r$, valamint a szimuláció teljes rendű részének hossza az teljes szimulált időtartamhoz képest, $c$. Tapasztalataim szerint a rögzített $c=0.15$ választás mellett $r=4$ az alsó határ, aminél még ránézésre használható közelítő eredmény adódik. Ha ugyanilyen $r=4$ mellett $c=0.07$-ot választottam, jelentősen megnőtt a közelítő megoldás hibája. Ez a megnövekedett hibájú megoldás \aref{subfig:keves_ido_rossz}. ábrán látható. Ebben a helyzetben az egyik megoldás, hogy a lecsökkentett $c$ mellé megnöveljük $r$-t, hogy a kevés és kevésbé reprezentatív mintahalmaz alapján is olyan bázist tudjon produkálni a POD, amiben jól leírható a rendszer. Enek a megoldásnak a hatása, pontosabban az $r=8$választás hatása, \aref{subfig:keves_ido_jo}. ábrán látható.
         \begin{figure}[h]
             \centering
             \begin{subfigure}{0.48\textwidth}
                 \includegraphics[width=\textwidth]{kep/euler_0.07_4_td.eps}
-                \caption{Hiba az összetartozó ponthoz képest.}
+                \caption{Probléma}
+                \label{subfig:keves_ido_rossz}
             \end{subfigure}
             \begin{subfigure}{0.48\textwidth}
                 \includegraphics[width=\textwidth]{kep/euler_0.07_8_td.eps}
-                \caption{Abszolút hiba.}
+                \caption{Megoldás ($r=4 \rightarrow 8$)}
+                \label{subfig:keves_ido_jo}
             \end{subfigure}
-            \caption{Kevés idő.}
+            \caption{Túl rövid a teljes rendű szimuláció időtartama ($c$).}
             \label{fig:keves_ido}
         \end{figure}
+        \par
+        Nagy hiba esetén a másik irányú korrekcióval is próbálkozhatunk, név szerint $c$ növelésével. Ennek a bemutatásához az eredeti $c=0.15$, $r=4$ paraméterektől az $r=2$ választással tértem el, ami már egy extrém kicsi szám erre a paraméterre, így nem várhatunk sok jót ettől a közelítő megoldástól. Az ehhez tartozó eredmények \aref{subfig:keves_vektor_rossz}. ábrán láthatóak. Ezek után a $c=0.3$ választással éltem, ennek az eredménye \aref{subfig:keves_vektor_jo}. ábrán látható. Megfigyelhető, hogy a teljes rendű megoldáshoz viszonyított hibával jelentős javulást nem értem el. A $c=0.3$ már azt jelenti, hogy a teljes időtartamnak egy számottevő részét a teljes rendű szimulációval számolom ki, ezek után már megkérdőjelezhető a POD használata a fennmaradó irőre. A redukált bázis kiszámolásának, valamint az ebben kiszámolt megoldás visszaalakításának többletmunkájától eltekintve még szélsőséges esetben is csak körülbelül $0.3$-szorosára csökkenthető az erőforrásigény az egész időtartamra végzett teljes rendű számításhoz képest. Ezek alapján ki lehet jelenteni, hogy a vizsgált rendszer elfogadható modellezésére nem elegendő 2 db. bázisvektor. A bázisvektorok számára vonatkozó határ mellett feltétlenül létezik a minták számára, valamint azok reprezentativitására vonatkozó határ is. Ez pedig azt korlátozza, hogy a teljes időtartamnak mennyire kis részére lehet korlátozni a mintavételezést. Természetesen ez a két határ különböző modelleknél más és más. 
         \begin{figure}[h]
             \centering
             \begin{subfigure}{0.48\textwidth}
                 \includegraphics[width=\textwidth]{kep/euler_0.15_2_td.eps}
-                \caption{Hiba az összetartozó ponthoz képest.}
+                \caption{Probléma}
+                \label{subfig:keves_vektor_rossz}
             \end{subfigure}
             \begin{subfigure}{0.48\textwidth}
                 \includegraphics[width=\textwidth]{kep/euler_0.3_2_td.eps}
-                \caption{Abszolút hiba.}
+                \caption{Részleges megoldás ($c=0.15 \rightarrow 0.3$)}
+                \label{subfig:keves_vektor_jo}
             \end{subfigure}
-            \caption{Kevés vektor.}
+            \caption{Túl kicsi a bázisvektorok száma ($r$).}
             \label{fig:keves_vektor}
         \end{figure}
+    \section{Összegzés}
         %\clearpage
     \bibliography{mybib}
     \bibliographystyle{plain}

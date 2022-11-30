@@ -266,14 +266,14 @@ hold off
 %% calculating error compared to the full model
 error_fe = abs(H_all(2:end-1,nSampled_fe+1:nStep)-H_aa_fe(2:end-1,nSampled_fe+1:nStep));
 rel_error_fe_all = error_fe'./H_all(2:end-1,nSampled_fe+1:nStep)';
-abs_error_fe_all = error_fe';
+abs_error_fe_all = error_fe;
 
 rel_error_fe = zeros(n-2,n_plot);
-rel_max_error_fe = zeros(n-2,n_plot);
+%rel_max_error_fe = zeros(n-2,n_plot);
 t_plot = t_sampled_end_fe:((Tmax-t_sampled_end_fe)/(n_plot-1)):Tmax;
 for i=1:n-2
     rel_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),rel_error_fe_all(:,i),t_plot)';
-    rel_max_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),abs_error_fe_all(:,i),t_plot)';
+    %rel_max_error_fe(i,:) = interp1(t_all(nSampled_fe+1:nStep),abs_error_fe_all(:,i),t_plot)';
 end
 
 figure(7)
@@ -281,12 +281,12 @@ imagesc(rel_error_fe,"XData",t_plot,"YData",dr:dr:(a-dr))
 hold on
 xlabel('t [s]')
 ylabel('r [m]')
-colorbar;
-title('Hiba az összetartozó ponthoz képest');
+colorbar
+title('Relatív hiba');
 hold off
 
 figure(8)
-imagesc(rel_max_error_fe,"XData",t_plot,"YData",dr:dr:(a-dr))
+imagesc(abs_error_fe_all,"XData",t_plot,"YData",dr:dr:(a-dr))
 hold on
 xlabel('t [s]')
 ylabel('r [m]')
@@ -296,11 +296,12 @@ colorbar;
 hold off
 
 %% plotting the solution's waterfall diagram
+t_plot = 0:((Tmax)/(n_plot-1)):Tmax;
 figure(9)
 imagesc(H_all,"XData",t_plot,"YData",dr:dr:(a-dr))
 hold on
 colorbar;
-title('H_{\phi} vízesésdiagramja');
+title('H_{\phi} [A/m]');
 xlabel('t [s]')
 ylabel('r [m]')
 hold off
@@ -309,7 +310,7 @@ figure(10)
 imagesc(E_all,"XData",t_plot,"YData",dr:dr:(a-dr))
 hold on
 colorbar;
-title('E_{z} vízesésdiagramja');
+title('E_{z} [V/m]');
 xlabel('t [s]')
 ylabel('r [m]')
 hold off

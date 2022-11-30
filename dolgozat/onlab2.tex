@@ -222,7 +222,7 @@
                 \textbf{B}~&=~\mu \textbf{H} \\
                 \textbf{J}~&=~\sigma\textbf{E} + \textbf{J}_i
                 \end{aligned}
-            \end{equation}% TODO maxwell-egyenletek nevei
+            \end{equation}
             A $\textbf{J}_i$ gerjesztő áramsűrűség csak $z$ irányú, így az Amp\`ere-törvény miatt a rá merőleges $\textbf{H}$ mágneses térerősségnek csak $\varphi$-irányú komponense lesz. A $\textbf{H}$ változása pedig a Faraday-törvény miatt szintén csak $z$ irányú, $\sigma\textbf{E}$ vezetési áramot hozhat létre, tehát az eredő $\textbf{J}$ áramnak mindig csak $z$-irányú komponense lesz, a $\textbf{H}$ térerősségnek pedig csak $\varphi$-irányú komponense, így elég csupán ezekkel a komponensekkel foglalkozni, amelyeket mint skalármennyiségekként lehet meghatározni.
             \begin{equation}\label{equ:komponens}
                 \begin{aligned}
@@ -269,7 +269,7 @@
                 \caption{A szinguláris értékek az előrelépő Euler megoldásból.}
                 \label{fig:sigma}
             \end{figure}
-            \Aref{fig:sigma}. ábrán bejelölt határvonalak közül a ,,numerikus hibá''-t elválasztó vonal elég egyértelmű helyen van, ott tényleg van egy egyértelmű törés az értékek sorozatában. Ezzel szemben a ,,fontos'' és ,,nem fontos'' részek közötti vonal pontos helye már nem magától értetődő, attól függ, hogy mekkora hibát engedhetünk meg a szimuláció során.
+            \Aref{fig:sigma}. ábrán bejelölt határvonalak közül a ,,numerikus hibá''-t elválasztó vonal elég egyértelmű helyen van, ott van egy törés az értékek sorozatában. Ezzel szemben a ,,fontos'' és ,,nem fontos'' részek közötti vonal pontos helye már nem magától értetődő, attól függ, hogy mekkora hibát engedhetünk meg a szimuláció során.
             \par
             A numerikus hibák által dominált szinguláris értékek egymástól csak nagyon kevéssé térnek el, a többség majdnem pontosan \num{1e-13} értékű. A legnagyobb szinguláris érték pedig \num{1e3} körüli. Ezek hányadosa tehát körülbelül \num{1e16}. A számok MATLAB-ban a sztenderd double formátumban tárolódnak el, amiknek az értékes helyiértékeket tároló része, vagyis a mantissza 52 bites. Az 52 biten ábrázolható legnagyobb szám ($2^{52}-1$) körülbelül \num{4.5035e15}, ami jól illeszkedik a tapasztalt relatív pontossághoz. Gyakorlatilag amikor egy-egy double-ként tárolt számot adna össze a számítógép, amelyek hányadosa eléri a $2^{52}$-t, akkor az exponensek egyeztetéséhez a kisebb szám mantisszáját legalább 52 helyiértékkel kell léptetelni, de ezáltal az összes értékes bit kiléptetődik és 0-kkal töltődik fel a helyük. Emiatt az összeadás eredménye pontosan a nagyobb szám lesz, mintha hozzá sem adtuk volna a kisebbet, így a kisebb szám effektíve 0. Az SVD kiszámolása közben  ilyen double összeadások miatt lehetetlenül el a legnagyobbhoz képest nagyon kis szinguláris értékek és az ezekhez tartozó szinguláris vektorok kiszámolása.
             \par

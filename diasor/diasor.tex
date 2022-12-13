@@ -36,51 +36,71 @@
 \begin{document}
 \maketitle	% címoldal
 \begin{frame}
-	\numframetitle{Az 1. dia címe}
-	\framesubtitle{Az 1. dia alcíme}
-	\begin{columns}	
+	\numframetitle{A nagy szabadsági fok problémája}
+	\begin{columns}
 		\column{0.48\textwidth}
-		    asdasdasd
+            \begin{center}
+    		    Bonyolult szimulálandó modell
+                \begin{align*}
+                    \Downarrow
+                \end{align*}
+                Sok szabadsági fok
+                \begin{align*}
+                    \Downarrow
+                \end{align*}
+            \end{center}
+            \begin{itemize}
+                \item Nagy egyenletrendszer
+                \item Sok ($n$) ismeretlen
+                \item Nagy memóriaigény
+                \item Hosszú számítási idő
+            \end{itemize}
         \column{0.48\textwidth}
-			Lehetségesek ilyen átalakulások ütközések hatására:
-			\begin{align*}
-				Xe^+ + e^- \quad \longleftrightarrow \quad Xe
-			\end{align*}		
-			A töltött részecskék tere és a külső elektromágneses tér együtt hat a töltött részecskék mozgására.
-			\begin{align*}
-				\Sigma Q = 0
-			\end{align*}
+	        Sokszor nem megengedhető az egyszerűbb modell\\[3ex]
+            (pl. ritkább végeselem háló)\\[3ex]
+            $n$ nem csökkenthető
+    \end{columns}
+\end{frame}
+\begin{frame}
+	\numframetitle{Modell-redukció}
+    \framesubtitle{POD (Proper Orthogonal Decomposition)}
+	\begin{columns}
+		\column{0.48\textwidth}
+            A bonyolult modell megoldását közelítjük kevesebb ($r< n$) szabadsági fokkal\\[3ex]
+            Közelítő, olcsó megoldás a bonyolult problémára\\[3ex]
+            Kisebb egyenletrendszert kell megoldani ($r$ egyenlet), de mind az $n$ ismeretlenre lesz közelítő eredmény
+		\column{0.48\textwidth}
+            POD:\\[3ex]
+            \begin{center}
+                $\mathbf{X}$ Adathalmaz
+                \begin{align*}
+                    \Downarrow
+                \end{align*}
+                Csonkításhoz optimális\\ sorbarendezett $\Psi$ bázis\\[1ex] \large\underline{$\mathbf{X}$-hez}\normalsize
+            \end{center}
+            \begin{align*}
+                \Psi &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\,\Psi_n\right\}\\
+                \Psi' &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\,\Psi_r\right\}
+            \end{align*}
 	\end{columns}
 \end{frame}
 \begin{frame}
-	\numframetitle{Az egydimenziós modell}
-	\begin{columns}
-		\column{0.48\textwidth}
-			A következő egyszerűsítésekkel jutunk 3D-ből az 1D plazmához: \\
-			\begin{itemize}
-				\item A töltetlen $Xe$ részecskéket elhagyjuk
-				\item Az ütközésektől eltekintünk
-				\item Csak az elektronok mozgását vizsgáljuk
-				\item Pontszerű részecskék helyett felületi töltéssűrűséggel rendelkező, az $x$ tengelyre merőleges lapok
-				\item A pozitív töltésű $Xe^+$ ionokat helyhez kötött háttér-töltéssűrűségnek vesszük
-			\end{itemize}
-		\column{0.48\textwidth}
-			\begin{itemize}
-				\item A szimulációs tér egydimenziós és ciklikus, $x=0 \Longleftrightarrow x=N_g$
-				\item A külső elektromos teret 0-nak vesszük
-				\item A mégneses térnek nincs hatása 1D-ben
-			\end{itemize}
-	\end{columns}
+	\numframetitle{Honnan jön \textbf{X}? Hol használjuk fel?}
+    	\begin{figure}
+			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
+		\end{figure}
 \end{frame}
 \begin{frame}
-	\numframetitle{A Particle-Mesh módszer}
-	\begin{columns}
-		\column{0.48\textwidth}
-			Egy kis random szöveg
-		\column{0.48\textwidth}
-			\begin{figure}
-				\includegraphics[width=\textwidth]{bme_logo.pdf}
-			\end{figure}
-	\end{columns}
+	\numframetitle{POD algoritmus: SVD}
+    \framesubtitle{Singular Value Decomposition}
+    	\begin{figure}
+			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
+		\end{figure}
+\end{frame}
+\begin{frame}
+	\numframetitle{Csonkításból adódó hiba}
+    	\begin{figure}
+			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
+		\end{figure}
 \end{frame}
 \end{document}

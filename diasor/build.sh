@@ -1,27 +1,31 @@
 #!/bin/sh
 cim="diasor"
-bib=1
+bib=0
 echo "Fordítás pdflatex 1"
 echo "Fordítás pdflatex 1\n\n\n" > output.txt
 pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
 if [ $? = 0 ]; then
-    if [ $bib != 0 ]; then
-        echo "Fordítás bibtex"
-        echo "\n\n\nFordítás bibtex\n\n\n" >> output.txt
-        bibtex $cim >> output.txt
-        echo "Fordítás pdflatex 2"
-        echo "\n\n\nFordítás pdflatex 2\n\n\n" >> output.txt
-        pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
-    fi
-    echo "Fordítás pdflatex 3"
-    echo "\n\n\nFordítás pdflatex 3\n\n\n" >> output.txt
-    pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
+#     if [ $bib != 0 ]; then
+#         echo "Fordítás bibtex"
+#         echo "\n\n\nFordítás bibtex\n\n\n" >> output.txt
+#         bibtex $cim >> output.txt
+         echo "Fordítás pdflatex 2"
+         echo "\n\n\nFordítás pdflatex 2\n\n\n" >> output.txt
+         pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
+#     fi
+#     echo "Fordítás pdflatex 3"
+#     echo "\n\n\nFordítás pdflatex 3\n\n\n" >> output.txt
+#     pdflatex -interaction=nonstopmode -halt-on-error $cim.tex >> output.txt
+    echo ok
 else
     echo "Error:\n\n"
     cat output.txt
 fi
 
 
+if [ -e $cim.snm ]; then
+	rm $cim.snm
+fi
 if [ -e $cim.nav ]; then
 	rm $cim.nav
 fi

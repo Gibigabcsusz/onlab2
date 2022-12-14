@@ -21,7 +21,7 @@
 \usefonttheme{serif}	% gyönyörű talpas betűtípus
 
 \beamertemplatenavigationsymbolsempty % a pdf-be ágyazott navigációs gombok kikapcsolása
-
+\newcommand\adj[1]{#1^{\mathrm{H}}}
 \title{Modell-redukció alkalmazása\\az elektromágneses térszámításban}			% cím
 %\subtitle{\vspace{0.3cm}Proper Orthogonal Decomposition} 	% alcím
 
@@ -36,7 +36,7 @@
 \begin{document}
 \maketitle	% címoldal
 \begin{frame}
-	\numframetitle{A nagy szabadsági fok problémája}
+	\numframetitle{A sok szabadsági fok problémája}
 	\begin{columns}
 		\column{0.48\textwidth}
             \begin{center}
@@ -57,8 +57,13 @@
             \end{itemize}
         \column{0.48\textwidth}
 	        Sokszor nem megengedhető az egyszerűbb modell\\[3ex]
-            (pl. ritkább végeselem háló)\\[3ex]
-            $n$ nem csökkenthető
+            (pl. ritkább végeselem háló)
+            \begin{align*}
+                \Downarrow
+            \end{align*}
+            \begin{center}
+                $n$ nem csökkenthető
+            \end{center}
     \end{columns}
 \end{frame}
 \begin{frame}
@@ -72,35 +77,95 @@
 		\column{0.48\textwidth}
             POD:\\[3ex]
             \begin{center}
-                $\mathbf{X}$ Adathalmaz
+                $\mathbf{S}$ Adathalmaz
                 \begin{align*}
                     \Downarrow
                 \end{align*}
-                Csonkításhoz optimális\\ sorbarendezett $\Psi$ bázis\\[1ex] \large\underline{$\mathbf{X}$-hez}\normalsize
+                Csonkításhoz optimális\\ sorbarendezett $\Psi$ bázis\\[1ex] \Large\underline{$\mathbf{S}$-hez}\normalsize
             \end{center}
             \begin{align*}
-                \Psi &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\,\Psi_n\right\}\\
-                \Psi' &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\,\Psi_r\right\}
+                \Psi &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\Psi_r,\,...\,,\Psi_n\right\}\\
+                \Psi' &= \left\{ \Psi_1,\,\Psi_2,\,...\,,\Psi_r\right\}
             \end{align*}
 	\end{columns}
 \end{frame}
 \begin{frame}
-	\numframetitle{Honnan jön \textbf{X}? Hol használjuk fel?}
-    	\begin{figure}
-			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
-		\end{figure}
+	\numframetitle{Honnan jön \textbf{S}? Hol használjuk fel?}
+        \begin{columns}
+            \column{0.48\textwidth}
+                \textbf{S}: előző megoldások hasonló problémára
+                \begin{align*}
+                    {\bf S} = \left[ {\bf x}_1~{\bf x}_2~{\bf x}_3~\hdots~{\bf x}_k \right] 
+                \end{align*}
+            \column{0.48\textwidth}
+                \begin{block}{Időlépéses séma}
+                    \textbf{S}: Az előző időlépésekre kapott megoldások
+                \end{block}
+                \vspace{1.5cm}
+                \begin{block}{Anyagparaméterek változása}
+                    \textbf{S}: Megoldások ugyanarra a problémára más anyagparaméterek mellett
+                \end{block}
+        \end{columns}
 \end{frame}
 \begin{frame}
 	\numframetitle{POD algoritmus: SVD}
     \framesubtitle{Singular Value Decomposition}
+        \begin{columns}
+            \column{0.25\textwidth}
+                \Large
+                \begin{align*}
+                    {\bf S}~=&~{\bf U \Sigma \adj{V}}
+                \end{align*}
+                \normalsize
+                \vspace{0.3cm}
+                \begin{align*}
+                    \text{standard}~\rightarrow~\Psi'
+                \end{align*}
+                Vetítés hibája:
+                \begin{align*}
+                    \sim&~\dfrac{\sigma_{r+1}}{\sigma_1}~\approx~10^{-5}
+                \end{align*}
+            \column{0.74\textwidth}
+    	        \begin{figure}
+			        \includegraphics[width=\textwidth]{kep/euler_0.15_4_sv.eps}
+		        \end{figure}
+        \end{columns}
+\end{frame}
+\begin{frame}
+	\numframetitle{Példa szimuláció}
+    \framesubtitle{Modell}
     	\begin{figure}
-			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
+			\includegraphics[width=0.7\textwidth]{kep/modell.pdf}
 		\end{figure}
 \end{frame}
 \begin{frame}
-	\numframetitle{Csonkításból adódó hiba}
+	\numframetitle{Teljes rendű megoldás}
     	\begin{figure}
-			\includegraphics[width=0.7\textwidth]{kep/euler_0.15_4_sv.eps}
+			\includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_hphi_waterfall.eps}
+			\includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_ez_waterfall.eps}
 		\end{figure}
+\end{frame}
+\begin{frame}
+	\numframetitle{Túl kevés bázisvektor}
+    	\begin{figure}
+			\includegraphics[width=0.7\textwidth]{kep/euler_0.07_4_td.eps}
+		\end{figure}
+\end{frame}
+\begin{frame}
+	\numframetitle{Teljes és redukált rendű megoldás}
+    	\begin{figure}
+			\includegraphics[width=0.48\textwidth]{kep/euler_0.15_4_td.eps}
+			\includegraphics[width=0.48\textwidth]{kep/euler_0.07_8_td.eps}
+		\end{figure}
+\end{frame}
+\begin{frame}
+    \centering
+    \includegraphics[width=0.3\textwidth]{kep/euler_0.15_4_sv.eps}
+    \includegraphics[width=0.3\textwidth]{kep/modell.pdf}\\
+    \includegraphics[width=0.3\textwidth]{kep/euler_0.15_4_hphi_waterfall.eps}
+    \includegraphics[width=0.3\textwidth]{kep/euler_0.15_4_ez_waterfall.eps}\\
+	\includegraphics[width=0.3\textwidth]{kep/euler_0.07_4_td.eps}
+	\includegraphics[width=0.3\textwidth]{kep/euler_0.15_4_td.eps}
+	\includegraphics[width=0.3\textwidth]{kep/euler_0.07_8_td.eps}
 \end{frame}
 \end{document}
